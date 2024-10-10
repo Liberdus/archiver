@@ -1,5 +1,5 @@
 import { P2P } from '@shardeum-foundation/lib-types'
-import { ArchiverReceipt, Receipt } from '../dbstore/receipts'
+import { ArchiverReceipt } from '../dbstore/receipts'
 import { calculateAccountHash } from './calculateAccountHash'
 
 // Refer to https://github.com/shardeum/shardeum/blob/89db23e1d4ffb86b4353b8f37fb360ea3cd93c5b/src/shardeum/shardeumTypes.ts#L242
@@ -33,7 +33,7 @@ export enum InternalTXType {
 }
 
 export const verifyGlobalTxAccountChange = (
-  receipt: ArchiverReceipt | Receipt,
+  receipt: ArchiverReceipt,
   failedReasons = [],
   nestedCounterMessages = []
 ): boolean => {

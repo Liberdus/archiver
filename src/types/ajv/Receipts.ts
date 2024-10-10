@@ -88,12 +88,12 @@ const schemaGlobalTxReceipt = {
 }
 
 const schemaAppReceiptData = {
-  type: 'object',
+  type: ['object', 'null'],
   properties: {
-    accountId: { type: 'string' },
-    data: { type: 'object', additionalProperties: true },
+    appReceiptId: { type: 'string' },
+    data: { type: 'object', additionalProperties: true }, // [TODO]: Remove it ( No needed for Liberdus )
   },
-  required: ['data'],
+  required: [],
   additionalProperties: true,
 }
 

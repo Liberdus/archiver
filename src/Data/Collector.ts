@@ -25,8 +25,8 @@ import {
 } from '../Data/DataLogWriter'
 import * as OriginalTxDB from '../dbstore/originalTxsData'
 import ShardFunction from '../ShardFunctions'
-import { accountSpecificHash, verifyAccountHash } from '../shardeum/calculateAccountHash'
-import { ShardeumReceipt, verifyAppReceiptData } from '../shardeum/verifyAppReceiptData'
+import { calculateAccountHash, verifyAccountHash } from '../shardeum/calculateAccountHash'
+import { verifyAppReceiptData } from '../shardeum/verifyAppReceiptData'
 import { Cycle as DbCycle } from '../dbstore/types'
 import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
 import { verifyPayload } from '../types/ajv/Helpers'
@@ -686,9 +686,9 @@ export async function checkIfValidOverwrite(receipt: any, txId: string): Promise
       )
     if (nestedCountersInstance) nestedCountersInstance.countEvent('duplicate-receipts', `txId : ${txId}`)
 
-    const existingShardeumReceipt = existingReceipt.appReceiptData.data as ShardeumReceipt
-    const existingStatus = existingShardeumReceipt.readableReceipt.status
-    if (existingStatus === 1) {
+    // Liberdus App Receipt 
+    const existingStatus = existingReceipt.appReceiptData.success
+    if (existingStatus === true) {
       return false // you cannot override a successful receipt (status 1) with any new receipt
     } else return true // if the existingStatus is 0 (failure), let the new receipt ( be it with status 0 or 1) override the old failure receipt
   } catch (error) {
@@ -1047,10 +1047,10 @@ export const storeReceiptData = async (
 
       const txObj: Transaction.Transaction = {
         txId: txId,
-        appReceiptId: appReceiptData ? appReceiptData.accountId : txId, // Set txId if appReceiptData lacks appReceiptId
+        appReceiptId: appReceiptData.appReceiptId, // Expect appReceiptId to be provided by the dapp
         timestamp: tx.timestamp,
         cycleNumber: cycle,
-        data: appReceiptData ? appReceiptData.data : {},
+        data: appReceiptData || {},
         originalTxData: tx.originalTxData,
       }
 
@@ -1249,7 +1249,7 @@ export const storeAccountData = async (restoreData: StoreAccountParam = {}): Pro
     const combineAccounts = []
     for (const account of accounts) {
       try {
-        const calculatedAccountHash = accountSpecificHash(account.data)
+        const calculatedAccountHash = calculateAccountHash(account.data)
         if (calculatedAccountHash !== account.hash) {
           Logger.mainLogger.error('Invalid account hash', account.accountId, account.hash, calculatedAccountHash)
           continue
@@ -1267,7 +1267,7 @@ export const storeAccountData = async (restoreData: StoreAccountParam = {}): Pro
     const combineProcessedTxs = []
     for (const receipt of receipts) {
       const txObj: Transaction.Transaction = {
-        txId: receipt.data.txId || receipt.txId,
+        txId: receipt.data?.txId || receipt.txId,
         appReceiptId: receipt.appReceiptId,
         timestamp: receipt.timestamp,
         cycleNumber: receipt.cycleNumber,
@@ -1275,7 +1275,7 @@ export const storeAccountData = async (restoreData: StoreAccountParam = {}): Pro
         originalTxData: {},
       }
       const processedTx: ProcessedTransaction.ProcessedTransaction = {
-        txId: receipt.data.txId || receipt.txId,
+        txId: receipt.data?.txId || receipt.txId,
         cycle: receipt.cycleNumber,
         txTimestamp: receipt.timestamp,
         applyTimestamp: receipt.timestamp,

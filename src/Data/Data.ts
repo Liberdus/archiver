@@ -47,6 +47,7 @@ import { customFetch } from '../utils/customHttpFunctions'
 import { ArchiverLogging } from '../profiler/archiverLogging'
 import { Utils as UtilsTypes } from '@shardeum-foundation/lib-types'
 import { logEnvSetup } from '../utils/environment'
+import { allowedArchiversManager } from '../shardeum/allowedArchiversManager'
 
 interface ValidationBreadcrumb {
   cycle: P2PTypes.CycleCreatorTypes.CycleData
@@ -633,6 +634,19 @@ export function collectCycleData(
     }
     if (config.VERBOSE) Logger.mainLogger.debug('Cycle received', cycle.counter, receivedCycleTracker[cycle.counter])
 
+    let minCycleConfirmations = Math.min(Math.ceil(NodeList.getActiveNodeCount() / currentConsensusRadius), 5)
+    // For the first node in the forming/shutdown/restart/restore network
+    if (NodeList.getActiveNodeCount() === 0) {
+      const networkModes = ['forming', 'shutdown', 'restart', 'restore']
+      if (networkModes.includes(Cycles.currentNetworkMode)) {
+        minCycleConfirmations = 1
+      }
+    }
+    if (minCycleConfirmations < 1) {
+      Logger.mainLogger.error('minCycleConfirmations is less than 1', minCycleConfirmations)
+      return
+    }
+
     if (NodeList.activeListByIdSorted.length === 0) {
       nestedCountersInstance.countEvent('collectCycleData', 'no_active_nodes_direct_process_' + cycle.mode, 1)
       Logger.mainLogger.debug(`collectCycleData: No active nodes, processing cycle ${cycle.counter} directly`)
@@ -932,9 +946,35 @@ async function syncFromNetworkConfig(): Promise<any> {
         maxCyclesShardDataToKeep !== config.maxCyclesShardDataToKeep
       )
         updateConfig({ maxCyclesShardDataToKeep })
-      return tallyItem
     }
-    return null
+    if (tallyItem?.value?.config?.debug) {
+      const { multisigKeys, minSigRequiredForArchiverWhitelist } = tallyItem.value.config.debug
+      let isAllowedArchiversUpdateNeeded = false
+      if (
+        !Utils.isUndefined(multisigKeys) &&
+        typeof multisigKeys === typeof config.multisigKeys &&
+        StringUtils.safeStringify(multisigKeys) !== StringUtils.safeStringify(config.multisigKeys) &&
+        Object.keys(multisigKeys).length > 0
+      ) {
+        isAllowedArchiversUpdateNeeded = true
+        updateConfig({ multisigKeys })
+      }
+      if (
+        !Utils.isUndefined(minSigRequiredForArchiverWhitelist) &&
+        typeof minSigRequiredForArchiverWhitelist === typeof config.minSigRequiredForArchiverWhitelist &&
+        minSigRequiredForArchiverWhitelist !== config.minSigRequiredForArchiverWhitelist &&
+        minSigRequiredForArchiverWhitelist > 0
+      ) {
+        isAllowedArchiversUpdateNeeded = true
+        updateConfig({ minSigRequiredForArchiverWhitelist })
+      }
+      if (!allowedArchiversManager.getCurrentConfig() || isAllowedArchiversUpdateNeeded)
+        allowedArchiversManager.setGlobalAccountConfig(
+          config.multisigKeys,
+          config.minSigRequiredForArchiverWhitelist
+        )
+    }
+    return tallyItem
   } catch (error) {
     Logger.mainLogger.error('❌ Error in syncFromNetworkConfig: ', error)
     return null

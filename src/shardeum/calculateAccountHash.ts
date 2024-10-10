@@ -4,49 +4,11 @@ import { verifyPayload } from '../types/ajv/Helpers'
 import { AJVSchemaEnum } from '../types/enum/AJVSchemaEnum'
 import { verifyGlobalTxAccountChange } from './verifyGlobalTxReceipt'
 
-// account types in Shardeum
-export enum AccountType {
-  Account = 0, //  EOA or CA
-  ContractStorage = 1, // Contract storage key value pair
-  ContractCode = 2, // Contract code bytes
-  Receipt = 3, //This holds logs for a TX
-  Debug = 4,
-  NetworkAccount = 5,
-  NodeAccount = 6,
-  NodeRewardReceipt = 7,
-  DevAccount = 8,
-  NodeAccount2 = 9,
-  StakeReceipt = 10,
-  UnstakeReceipt = 11,
-  InternalTxReceipt = 12,
-  SecureAccount = 13,
-}
-
-/**
- * Computes a specific hash for an account object. This function removes any existing
- * `hash` property from the account object, calculates a new hash based on the account's
- * data, and then assigns the calculated hash back to the `hash` property of the account.
- *
- * @param account - The account object for which the hash is to be calculated.
- *                  The object is expected to have key-value pairs representing account data.
- * @returns The newly calculated hash as a string.
- */
-export const accountSpecificHash = (account: any): string => {
-  if (account == null || account == undefined) {
-    throw new Error('Account data is null or undefined')
-  }
-
-  try {
-    // Remove the existing hash property from the account object
-    delete account.hash
-
-    // Calculate a new hash based on the account's data and assign it to the hash property
-    account.hash = crypto.hashObj(account)
-    return account.hash
-  } catch (error) {
-    console.error('Error calculating account-specific hash:', error)
-    throw new Error('Failed to calculate account-specific hash')
-  }
+// Reference: https://github.com/Liberdus/server/blob/84f80564c45b06343df9bed4fe66a1628052a4cc/src/index.ts#L349
+export const calculateAccountHash = (account: any): string => {
+  account.hash = '' // Not sure this is really necessary
+  account.hash = crypto.hashObj(account)
+  return account.hash
 }
 
 /**
@@ -101,7 +63,7 @@ export const verifyNonGlobalTxAccountChange = async (
         nestedCounterMessages.push(`Account not found in the receipt`)
         return false
       }
-      const calculatedAccountHash = accountSpecificHash(accountData.data)
+      const calculatedAccountHash = calculateAccountHash(accountData.data)
       // eslint-disable-next-line security/detect-object-injection
       const expectedAccountHash = afterStateHashes[index]
       if (calculatedAccountHash !== expectedAccountHash) {
@@ -141,29 +103,13 @@ export const verifyAccountHash = async (
   nestedCounterMessages = []
 ): Promise<boolean> => {
   try {
-    let globalReceiptValidationErrors // This is used to store the validation errors of the globalTxReceipt
-    try {
-      globalReceiptValidationErrors = verifyPayload(AJVSchemaEnum.GlobalTxReceipt, receipt?.signedReceipt)
-    } catch (error) {
-      globalReceiptValidationErrors = true
-      failedReasons.push(
-        `Invalid Global Tx Receipt error: ${error}. txId ${receipt.tx.txId} , cycle ${receipt.cycle} , timestamp ${receipt.tx.timestamp}`
-      )
-      nestedCounterMessages.push(
-        `Invalid Global Tx Receipt error: ${error}. txId ${receipt.tx.txId} , cycle ${receipt.cycle} , timestamp ${receipt.tx.timestamp}`
-      )
-      return false
-    }
-
     let result: boolean
-    if (!globalReceiptValidationErrors) {
+    if (receipt.globalModification) {
       result = await verifyGlobalTxAccountChange(receipt, failedReasons, nestedCounterMessages)
     } else {
       result = await verifyNonGlobalTxAccountChange(receipt, failedReasons, nestedCounterMessages)
     }
-
-    if (!result) return false
-    return true
+    return result
   } catch (e) {
     console.error(`Error in verifyAccountHash`, e)
     failedReasons.push(`Error in verifyAccountHash ${e}`)

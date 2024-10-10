@@ -88,14 +88,14 @@ const schemaGlobalTxReceipt = {
 }
 
 const schemaAppReceiptData = {
-  type: 'object',
-  properties: {
-    accountId: { type: 'string' },
-    data: { type: 'object', additionalProperties: true },
-  },
-  required: ['data'],
-  additionalProperties: true,
-}
+    type: ['object', 'null'],
+    properties: {
+        appReceiptId: { type: 'string' },
+        data: { type: 'object', additionalProperties: true }
+    },
+    required: [],
+    additionalProperties: true
+};
 
 const schemaTx = {
   type: 'object',

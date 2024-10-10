@@ -1,5 +1,5 @@
 {
-  "name": "@shardeum-foundation/archiver",
+  "name": "@liberdus/archiver",
   "version": "3.7.8-prerelease.0",
   "engines": {
     "node": "20.19.3"
@@ -11,7 +11,8 @@
     "build/**/*",
     "archiver-log.json",
     "tx-list-restore.json",
-    "static/tickets.json"
+    "static/tickets.json",
+    "allowed-archivers.json"
   ],
   "bin": {
     "archive-server": "./build/server.js"

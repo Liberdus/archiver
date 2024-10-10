@@ -2,7 +2,7 @@ import path = require('path')
 import fs = require('fs')
 import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
 import * as Logger from '../Logger'
-import { verifyMultiSigs } from '../services/ticketVerification'
+import { verifyMultiSigs } from '../Utils'
 import { DevSecurityLevel } from '../types/security'
 import { Sign } from '../schemas/ticketSchema'
 import { config } from './../Config'

@@ -11,9 +11,7 @@ export function selectBestSuccessReceipt(receipts: ReceiptType[]): ReceiptType |
   if (!Array.isArray(receipts) || receipts.length === 0) return undefined
   // Only consider receipts with status=1 (success)
   const successReceipts = receipts.filter((r) => {
-    // Defensive: readableReceipt may not exist or may be nested in a non-object
-    const readableReceipt = (r?.appReceiptData?.data as { readableReceipt?: any })?.readableReceipt
-    return readableReceipt?.status === 1
+    return r.appReceiptData.success === true
   })
   if (successReceipts.length === 0) return undefined
 

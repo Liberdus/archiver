@@ -1,5 +1,5 @@
 {
-  "name": "@shardeum-foundation/archiver",
+  "name": "@liberdus/archiver",
   "version": "3.7.0-prerelease.0",
   "engines": {
     "node": "18.19.1"

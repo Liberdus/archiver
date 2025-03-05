@@ -78,12 +78,12 @@ const schemaGlobalTxReceipt = {
 
 
 const schemaAppReceiptData = {
-    type: 'object',
+    type: ['object', 'null'],
     properties: {
-        accountId: { type: 'string' },
+        appReceiptId: { type: 'string' },
         data: { type: 'object', additionalProperties: true }
     },
-    required: ['data'],
+    required: [],
     additionalProperties: true
 };
 
@@ -111,7 +111,7 @@ const schemaArchiverReceipt = {
         executionShardKey: { type: 'string' },
         globalModification: { type: 'boolean' }
     },
-    required: ['tx', 'cycle', 'signedReceipt', 'appReceiptData', 'executionShardKey', 'globalModification'],
+    required: ['tx', 'cycle', 'signedReceipt', 'executionShardKey', 'globalModification'],
     additionalProperties: false
 };
 

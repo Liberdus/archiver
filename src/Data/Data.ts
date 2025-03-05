@@ -395,10 +395,19 @@ export function collectCycleData(
     }
     if (config.VERBOSE)
       Logger.mainLogger.debug('Cycle received', cycle.counter, receivedCycleTracker[cycle.counter])
-    
-    let minCycleConfirmations =
-      Math.min(Math.ceil(NodeList.getActiveNodeCount() / currentConsensusRadius), 5) ||
-      (cycle.counter <= 15 ? 1 : 3);
+
+    let minCycleConfirmations = Math.min(Math.ceil(NodeList.getActiveNodeCount() / currentConsensusRadius), 5)
+    // For the first node in the forming/shutdown/restart/restore network
+    if (NodeList.getActiveNodeCount() === 0) {
+      const networkModes = ['forming', 'shutdown', 'restart', 'restore']
+      if (networkModes.includes(Cycles.currentNetworkMode)) {
+        minCycleConfirmations = 1
+      }
+    }
+    if (minCycleConfirmations < 1) {
+      Logger.mainLogger.error('minCycleConfirmations is less than 1', minCycleConfirmations)
+      return
+    }
 
     // we can boost confirmation, but only if we are capped at 5 already:
     if (minCycleConfirmations === 5 && config.minCycleConfirmationsToSave > 5) {

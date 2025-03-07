@@ -1397,24 +1397,6 @@ export const storeOriginalTxData = async (
   for (const originalTxData of originalTxsData) {
     const { txId, timestamp } = originalTxData
     if (!txId || !timestamp) continue
-    try {
-      const tx = (originalTxData.originalTxData as any)?.tx;
-
-      const { result, reason } = verifyTransaction(tx);
-
-      if (result !== 'pass') {
-        Logger.mainLogger.info(
-            `OriginalTxData verification failed for`,
-            StringUtils.safeStringify(originalTxData),
-            '\n with reason ',
-            reason
-        );
-        continue
-      }
-    } catch (error) {
-      Logger.mainLogger.error(`Error verifying transaction: ${error.message} where tx was ${StringUtils.safeStringify(originalTxData)}`);
-      continue
-    }
     if (
       (processedOriginalTxsMap.has(txId) && processedOriginalTxsMap.get(txId) === timestamp) ||
       (originalTxsInValidationMap.has(txId) && originalTxsInValidationMap.get(txId) === timestamp)

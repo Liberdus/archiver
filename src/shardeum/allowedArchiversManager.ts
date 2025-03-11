@@ -2,9 +2,10 @@ import path = require('path')
 import fs = require('fs')
 import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
 import * as Logger from '../Logger'
-import { verifyMultiSigs } from '../services/ticketVerification'
+import { verifyMultiSigs } from '../Utils'
 import { DevSecurityLevel } from '../types/security'
 import { Sign } from '../schemas/ticketSchema'
+import { config, localTestArchivers } from '../Config'
 
 interface AllowedArchiversConfig {
     allowedArchivers: Array<{
@@ -36,6 +37,9 @@ class AllowedArchiversManager {
             this.configPath = path.resolve(configPath)
 
             if (!fs.existsSync(this.configPath)) {
+                if (config.useLocalTestArchivers) {
+                    this.loadAndVerifyConfig()
+                }
                 Logger.mainLogger.error('Config file does not exist')
                 return
             }
@@ -111,7 +115,13 @@ class AllowedArchiversManager {
 
     private loadAndVerifyConfig(): void {
         try {
-            const getArchiverConfig = this.getArchiverWhitelistConfig()
+            let getArchiverConfig = this.getArchiverWhitelistConfig()
+            if (!getArchiverConfig) {
+                // Added for local network test when allowed_archivers.json is not present
+                if (config.useLocalTestArchivers) {
+                    getArchiverConfig = localTestArchivers
+                }
+            }
             if (!getArchiverConfig) {
                 Logger.mainLogger.error('Failed to get archiver config')
                 return

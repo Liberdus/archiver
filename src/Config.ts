@@ -113,6 +113,8 @@ export interface Config {
   maxRecordsPerRequest: number // this is the equiavlent of the accountBucketSize config variable used by the validators to fetch records from the archiver
   multisigKeysSyncFromNetworkInternal: number // in seconds
   minCycleConfirmationsToSave: number // this is the minimum numbers of nodes that we need to a see a cycle from to save it
+  isEthereumSigningEnabled: boolean // Is Ethereum signing enabled
+  useLocalTestArchivers: boolean // Use local network test archivers as allowed archivers
 }
 
 let config: Config = {
@@ -248,6 +250,8 @@ let config: Config = {
   maxRecordsPerRequest: 200,
   multisigKeysSyncFromNetworkInternal: 600,
   minCycleConfirmationsToSave: -1,
+  isEthereumSigningEnabled: false,
+  useLocalTestArchivers: true,
 }
 // Override default config params from config file, env vars, and cli args
 export async function overrideDefaultConfig(file: string): Promise<void> {
@@ -379,3 +383,69 @@ export function updateConfig(newConfig: Partial<Config>): Config {
 }
 
 export { config }
+
+// Added as a workaround for local network test if the allowed_archivers.json is not present
+export const localTestArchivers = {
+  allowedArchivers: [
+    {
+      ip: '127.0.0.1',
+      port: 4000,
+      publicKey: '758b1c119412298802cd28dbfa394cdfeecc4074492d60844cc192d632d84de3',
+    },
+    {
+      ip: '127.0.0.1',
+      port: 4001,
+      publicKey: 'e8a5c26b9e2c3c31eb7c7d73eaed9484374c16d983ce95f3ab18a62521964a94',
+    },
+    {
+      ip: '127.0.0.1',
+      port: 4002,
+      publicKey: '9426b64e675cad739d69526bf7e27f3f304a8a03dca508a9180f01e9269ce447',
+    },
+    {
+      ip: '127.0.0.1',
+      port: 4003,
+      publicKey: 'ac9708eeb0ec408b42f6e2fdce85f96dbbb9f90a6c8e984fc7ea225baae7882b',
+    },
+    {
+      ip: '127.0.0.1',
+      port: 4004,
+      publicKey: '7a95c68fa1a852e25e4f33e1dc5b1b8b142c4b52209ec3535ac059b4b4db3b4c',
+    },
+    {
+      ip: '127.0.0.1',
+      port: 4005,
+      publicKey: 'fd24ef72d1e3ea49165df43e6f3b2737d5480ae4b7309cc11143af4ab35d28b2',
+    },
+    {
+      ip: '127.0.0.1',
+      port: 4006,
+      publicKey: '70c97b6a4cfaa7e75148e847dadc55314b1ce6c48eebe0044d6e80224728c93c',
+    },
+    {
+      ip: '127.0.0.1',
+      port: 4007,
+      publicKey: '0423e72b38c57dcb51e0825c3038ad15faae31e455ab160513923ba3d1047626',
+    },
+    {
+      ip: '127.0.0.1',
+      port: 4008,
+      publicKey: '41f24126b5326bb72300338b1dac97ef4dd2fab3e20e16606a8393a8d14eff54',
+    },
+    {
+      ip: '127.0.0.1',
+      port: 4009,
+      publicKey: 'aec5d2b663869d9c22ba99d8de76f3bff0f54fa5e39d2899ec1f3f4543422ec7',
+    },
+  ],
+  signatures: [
+    {
+      owner: '235a87986ef232e204d5672a5bc0d15201ad502f99ecf879109c53751deb8fca',
+      sig: '578b6de284aa2db5ab36cfc4b9a95e050967c224e5df8b582e981b35ef76366347436b1833213742a3d69f665f9b32c7123d4e7bdf1ee6a3e71eab326503090e939d659cff2ab0b36cd1dfb78cd3861afc9d6629b27ed6a9cc0719e9151e9dde',
+    },
+    {
+      owner: '4f4559259253943837268209775c4c8731a24aac11ef923f616ea543bae9355a',
+      sig: '4e5fc3eadf62329c1be85562775b5e74c2b2c4f778212455f439dafa052847d3c56ec94ede1750454740a54fc5f5881dbac4912dc2f1700cd2c8cd676b629e09939d659cff2ab0b36cd1dfb78cd3861afc9d6629b27ed6a9cc0719e9151e9dde',
+    },
+  ],
+}

@@ -6,6 +6,8 @@ import * as Logger from './Logger'
 import {Sign} from "./types/internalTxType";
 import {DevSecurityLevel} from "./types/security";
 import {ethers} from "ethers";
+import { config } from './Config'
+import * as Crypto from './Crypto'
 
 export interface CountSchema {
   count: string
@@ -590,7 +592,10 @@ export function verifyMultiSigs(
   if (sigs.length > Object.keys(allowedPubkeys).length) return { isValid: false, validCount: 0 }
 
   let validSigs = 0
-  const payload_hash = ethers.keccak256(ethers.toUtf8Bytes(Utils.safeStringify(rawPayload)))
+  let payload_hash = ''
+  if (config.isEthereumSigningEnabled)
+    payload_hash = ethers.keccak256(ethers.toUtf8Bytes(Utils.safeStringify(rawPayload)))
+
   const seen = new Set()
 
   for (let i = 0; i < sigs.length; i++) {
@@ -603,9 +608,20 @@ export function verifyMultiSigs(
     if (
         !seen.has(sigs[i].owner.toLowerCase()) &&
         allowedPubkeys[sigs[i].owner] &&
-        allowedPubkeys[sigs[i].owner] >= requiredSecurityLevel &&
-        ethers.verifyMessage(payload_hash, sigs[i].sig).toLowerCase() === sigs[i].owner.toLowerCase()
+        allowedPubkeys[sigs[i].owner] >= requiredSecurityLevel
     ) {
+      let isValidSignature = false
+      if (config.isEthereumSigningEnabled) {
+        isValidSignature =
+          ethers.verifyMessage(payload_hash, sigs[i].sig).toLowerCase() === sigs[i].owner.toLowerCase()
+      } else {
+        const signedObj = {
+          ...rawPayload,
+          sign: sigs[i],
+        }
+        isValidSignature = Crypto.verify(signedObj)
+      }
+      if (!isValidSignature) continue
       validSigs++
       seen.add(sigs[i].owner.toLowerCase())
     }

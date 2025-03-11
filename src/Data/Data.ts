@@ -41,6 +41,7 @@ import { AccountsCopy } from '../dbstore/accounts'
 import { getJson } from '../P2P'
 import { robustQuery } from '../Utils'
 import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { allowedArchiversManager } from '../shardeum/allowedArchiversManager'
 
 export const socketClients: Map<string, SocketIOClientStatic['Socket']> = new Map()
 export let combineAccountsData = {
@@ -631,9 +632,21 @@ async function syncFromNetworkConfig(): Promise<any> {
         maxCyclesShardDataToKeep !== config.maxCyclesShardDataToKeep
       )
         updateConfig({ maxCyclesShardDataToKeep })
-      return tallyItem
     }
-    return null
+    if (tallyItem?.value?.config?.debug) {
+      const { multisigKeys, minSigRequiredForArchiverWhitelist } = tallyItem.value.config.debug
+      // [TODO] Validate multisigKeys and minSigRequiredForArchiverWhitelist
+      if (
+        !Utils.isUndefined(multisigKeys) &&
+        !Utils.isUndefined(minSigRequiredForArchiverWhitelist) &&
+        typeof minSigRequiredForArchiverWhitelist === 'number' &&
+        minSigRequiredForArchiverWhitelist > 0
+      ) {
+        console.log('yes2')
+        allowedArchiversManager.setGlobalAccountConfig(multisigKeys, minSigRequiredForArchiverWhitelist)
+      }
+    }
+    return tallyItem
   } catch (error) {
     Logger.mainLogger.error('❌ Error in syncFromNetworkConfig: ', error)
     return null

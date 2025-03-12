@@ -658,7 +658,7 @@ async function syncFromNetworkConfig(): Promise<any> {
         isAllowedArchiversUpdateNeeded = true
         updateConfig({ minSigRequiredForArchiverWhitelist })
       }
-      if (isAllowedArchiversUpdateNeeded)
+      if (!allowedArchiversManager.getCurrentConfig() || isAllowedArchiversUpdateNeeded)
         allowedArchiversManager.setGlobalAccountConfig(
           config.multisigKeys,
           config.minSigRequiredForArchiverWhitelist

@@ -13,10 +13,9 @@ overrideDefaultConfig(configFile)
 crypto.init(config.ARCHIVER_HASH_KEY)
 const devAccounts = [
   {
-    publicKey: '235a87986ef232e204d5672a5bc0d15201ad502f99ecf879109c53751deb8fca',
-    secretKey:
-      '9c2c559c50c95be94a70d5e069c2ce7200bebdb55fc3b4aaaa67b8da34527398235a87986ef232e204d5672a5bc0d15201ad502f99ecf879109c53751deb8fca',
-  }
+    publicKey: '',
+    secretKey: '',
+  },
 ]
 
 interface ConfigData {

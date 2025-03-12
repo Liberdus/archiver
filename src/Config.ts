@@ -115,6 +115,10 @@ export interface Config {
   minCycleConfirmationsToSave: number // this is the minimum numbers of nodes that we need to a see a cycle from to save it
   isEthereumSigningEnabled: boolean // Is Ethereum signing enabled
   useLocalTestArchivers: boolean // Use local network test archivers as allowed archivers
+  minSigRequiredForArchiverWhitelist: number //
+  multisigKeys: {
+    [pubkey: string]: DevSecurityLevel
+  }
 }
 
 let config: Config = {
@@ -252,6 +256,15 @@ let config: Config = {
   minCycleConfirmationsToSave: -1,
   isEthereumSigningEnabled: false,
   useLocalTestArchivers: true,
+  minSigRequiredForArchiverWhitelist: 2,
+  multisigKeys: {
+    '0ad2caeba527f230f6b703fb6b50ad284968065c522eed42774107965dc0a1a7': DevSecurityLevel.HIGH,
+    '235a87986ef232e204d5672a5bc0d15201ad502f99ecf879109c53751deb8fca': DevSecurityLevel.HIGH,
+    '4561289434eff9b547250911ed0f75e38c16572c926c60f7a8a45c384d088835': DevSecurityLevel.HIGH,
+    '4f4559259253943837268209775c4c8731a24aac11ef923f616ea543bae9355a': DevSecurityLevel.HIGH,
+    '6128f995fd46a9be1af049d84d89424384770b0df3471b2eff4ddf476e399dd4': DevSecurityLevel.HIGH,
+    '899de21e0c47a29be4319376a9207f5e63d8e5b7d296b8a6391e301e1f14cd32': DevSecurityLevel.HIGH,
+  },
 }
 // Override default config params from config file, env vars, and cli args
 export async function overrideDefaultConfig(file: string): Promise<void> {

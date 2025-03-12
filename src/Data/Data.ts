@@ -200,7 +200,7 @@ export function initSocketClient(node: NodeList.ConsensusNodeInfo): void {
           Crypto.sign({
             publicKey: State.getNodeInfo().publicKey,
             timestamp: Date.now(),
-            intendedConsensor: node.publicKey
+            intendedConsensor: node.publicKey,
           })
         ),
       },
@@ -348,7 +348,7 @@ export function initSocketClient(node: NodeList.ConsensusNodeInfo): void {
       }
     })
   } catch (error) {
-    console.error('Error occurred during socket connection:', error);
+    console.error('Error occurred during socket connection:', error)
   }
 }
 
@@ -362,8 +362,12 @@ export function collectCycleData(
 
     if (NodeList.activeListByIdSorted.length > 0) {
       const [ip, port] = senderInfo.split(':')
-      const isInActiveNodes = NodeList.activeListByIdSorted.some(node => node.ip === ip && node.port.toString() === port)
-      const isInActiveArchivers = State.activeArchivers.some(archiver => archiver.ip === ip && archiver.port.toString() === port)
+      const isInActiveNodes = NodeList.activeListByIdSorted.some(
+        (node) => node.ip === ip && node.port.toString() === port
+      )
+      const isInActiveArchivers = State.activeArchivers.some(
+        (archiver) => archiver.ip === ip && archiver.port.toString() === port
+      )
       if (!isInActiveNodes && !isInActiveArchivers) break
     }
 
@@ -635,16 +639,30 @@ async function syncFromNetworkConfig(): Promise<any> {
     }
     if (tallyItem?.value?.config?.debug) {
       const { multisigKeys, minSigRequiredForArchiverWhitelist } = tallyItem.value.config.debug
-      // [TODO] Validate multisigKeys and minSigRequiredForArchiverWhitelist
+      let isAllowedArchiversUpdateNeeded = false
       if (
         !Utils.isUndefined(multisigKeys) &&
+        typeof multisigKeys === typeof config.multisigKeys &&
+        StringUtils.safeStringify(multisigKeys) !== StringUtils.safeStringify(config.multisigKeys) &&
+        Object.keys(multisigKeys).length > 0
+      ) {
+        isAllowedArchiversUpdateNeeded = true
+        updateConfig({ multisigKeys })
+      }
+      if (
         !Utils.isUndefined(minSigRequiredForArchiverWhitelist) &&
-        typeof minSigRequiredForArchiverWhitelist === 'number' &&
+        typeof minSigRequiredForArchiverWhitelist === typeof config.minSigRequiredForArchiverWhitelist &&
+        minSigRequiredForArchiverWhitelist !== config.minSigRequiredForArchiverWhitelist &&
         minSigRequiredForArchiverWhitelist > 0
       ) {
-        console.log('yes2')
-        allowedArchiversManager.setGlobalAccountConfig(multisigKeys, minSigRequiredForArchiverWhitelist)
+        isAllowedArchiversUpdateNeeded = true
+        updateConfig({ minSigRequiredForArchiverWhitelist })
       }
+      if (isAllowedArchiversUpdateNeeded)
+        allowedArchiversManager.setGlobalAccountConfig(
+          config.multisigKeys,
+          config.minSigRequiredForArchiverWhitelist
+        )
     }
     return tallyItem
   } catch (error) {

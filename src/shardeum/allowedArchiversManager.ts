@@ -119,6 +119,7 @@ class AllowedArchiversManager {
             if (!getArchiverConfig) {
                 // Added for local network test when allowed_archivers.json is not present
                 if (config.useLocalTestArchivers) {
+                    Logger.mainLogger.debug('Using local test archivers')
                     getArchiverConfig = localTestArchivers
                 }
             }

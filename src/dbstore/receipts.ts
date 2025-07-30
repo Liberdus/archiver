@@ -43,7 +43,7 @@ export interface ArchiverReceipt {
   signedReceipt: SignedReceipt | P2P.GlobalAccountsTypes.GlobalTxReceipt
   afterStates?: AccountsCopy[]
   beforeStates?: AccountsCopy[]
-  appReceiptData: object & { appReceiptId?: string; data: object }
+  appReceiptData: object & { appReceiptId: string; data: object } // [TODO]: Remove data object ( No needed for Liberdus )
   globalModification: boolean
 }
 

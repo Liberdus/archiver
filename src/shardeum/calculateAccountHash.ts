@@ -103,29 +103,13 @@ export const verifyAccountHash = async (
   nestedCounterMessages = []
 ): Promise<boolean> => {
   try {
-    let globalReceiptValidationErrors // This is used to store the validation errors of the globalTxReceipt
-    try {
-      globalReceiptValidationErrors = verifyPayload(AJVSchemaEnum.GlobalTxReceipt, receipt?.signedReceipt)
-    } catch (error) {
-      globalReceiptValidationErrors = true
-      failedReasons.push(
-        `Invalid Global Tx Receipt error: ${error}. txId ${receipt.tx.txId} , cycle ${receipt.cycle} , timestamp ${receipt.tx.timestamp}`
-      )
-      nestedCounterMessages.push(
-        `Invalid Global Tx Receipt error: ${error}. txId ${receipt.tx.txId} , cycle ${receipt.cycle} , timestamp ${receipt.tx.timestamp}`
-      )
-      return false
-    }
-
     let result: boolean
-    if (!globalReceiptValidationErrors) {
+    if (!receipt.globalModification) {
       result = await verifyGlobalTxAccountChange(receipt, failedReasons, nestedCounterMessages)
     } else {
       result = await verifyNonGlobalTxAccountChange(receipt, failedReasons, nestedCounterMessages)
     }
-
-    if (!result) return false
-    return true
+    return result
   } catch (e) {
     console.error(`Error in verifyAccountHash`, e)
     failedReasons.push(`Error in verifyAccountHash ${e}`)

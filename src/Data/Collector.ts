@@ -686,7 +686,7 @@ export async function checkIfValidOverwrite(receipt: any, txId: string): Promise
       )
     if (nestedCountersInstance) nestedCountersInstance.countEvent('duplicate-receipts', `txId : ${txId}`)
 
-    const appReceipt = existingReceipt.appReceiptData.data
+    const appReceipt = existingReceipt.appReceiptData
     // Liberdus App Receipt
     const existingStatus = 'success' in appReceipt ? (appReceipt.success === true ? 1 : 0) : 1
     if (existingStatus === 1) {
@@ -1051,7 +1051,7 @@ export const storeReceiptData = async (
         appReceiptId: appReceiptData.appReceiptId, // Expect appReceiptId to be provided by the dapp
         timestamp: tx.timestamp,
         cycleNumber: cycle,
-        data: appReceiptData ? appReceiptData.data : {},
+        data: appReceiptData || {},
         originalTxData: tx.originalTxData,
       }
 

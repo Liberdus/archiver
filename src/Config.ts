@@ -140,7 +140,7 @@ export interface Config {
   maxResponseSize: number
   enableDuplicateReceiptsCheck: boolean // To enable duplicate receipts check in storeReceiptData and not allow overwriting of success with failure
   isEthereumSigningEnabled: boolean // Is Ethereum signing enabled
-  minSigRequiredForArchiverWhitelist: number 
+  minSigRequiredForArchiverWhitelist: number
   multisigKeys: {
     [pubkey: string]: DevSecurityLevel
   }
@@ -198,7 +198,6 @@ let config: Config = {
   verifyReceiptSignaturesSeparately: true,
   verifyAccountData: true,
   verifyAppReceiptData: false, // Setting this to false for Liberdus
-  skipGlobalTxReceiptVerification: true,
   REQUEST_LIMIT: {
     MAX_ACCOUNTS_PER_REQUEST: 1000,
     MAX_RECEIPTS_PER_REQUEST: 100,

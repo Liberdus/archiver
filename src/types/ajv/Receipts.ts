@@ -91,9 +91,10 @@ const schemaAppReceiptData = {
   type: ['object', 'null'],
   properties: {
     appReceiptId: { type: 'string' },
+    success: { type: 'boolean' },
     data: { type: 'object', additionalProperties: true }, // [TODO]: Remove it ( No needed for Liberdus )
   },
-  required: [],
+  required: ['success'],
   additionalProperties: true,
 }
 

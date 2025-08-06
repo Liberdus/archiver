@@ -686,10 +686,9 @@ export async function checkIfValidOverwrite(receipt: any, txId: string): Promise
       )
     if (nestedCountersInstance) nestedCountersInstance.countEvent('duplicate-receipts', `txId : ${txId}`)
 
-    const appReceipt = existingReceipt.appReceiptData
-    // Liberdus App Receipt
-    const existingStatus = 'success' in appReceipt ? (appReceipt.success === true ? 1 : 0) : 1
-    if (existingStatus === 1) {
+    // Liberdus App Receipt 
+    const existingStatus = existingReceipt.appReceiptData.success
+    if (existingStatus === true) {
       return false // you cannot override a successful receipt (status 1) with any new receipt
     } else return true // if the existingStatus is 0 (failure), let the new receipt ( be it with status 0 or 1) override the old failure receipt
   } catch (error) {

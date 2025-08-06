@@ -197,7 +197,7 @@ let config: Config = {
   verifyReceiptData: true,
   verifyReceiptSignaturesSeparately: true,
   verifyAccountData: true,
-  verifyAppReceiptData: false, // Setting this to false for Liberdus
+  verifyAppReceiptData: true,
   REQUEST_LIMIT: {
     MAX_ACCOUNTS_PER_REQUEST: 1000,
     MAX_RECEIPTS_PER_REQUEST: 100,

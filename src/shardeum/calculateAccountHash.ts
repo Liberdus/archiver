@@ -104,7 +104,7 @@ export const verifyAccountHash = async (
 ): Promise<boolean> => {
   try {
     let result: boolean
-    if (!receipt.globalModification) {
+    if (receipt.globalModification) {
       result = await verifyGlobalTxAccountChange(receipt, failedReasons, nestedCounterMessages)
     } else {
       result = await verifyNonGlobalTxAccountChange(receipt, failedReasons, nestedCounterMessages)

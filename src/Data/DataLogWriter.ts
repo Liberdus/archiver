@@ -19,7 +19,7 @@ class DataLogWriter {
   dataLogWriteStream: WriteStream | null
   dataWriteIndex: number
   dataLogFilePath: string
-  totalNumberOfBytes: number
+  totalNumberOfEntries: number
   activeLogFileName: string
   activeLogFilePath: string
   writeQueue: string[]
@@ -28,7 +28,7 @@ class DataLogWriter {
   constructor(
     public dataName: string,
     public logCounter: number,
-    public maxNumberBytesPerLog: number
+    public maxNumberEntriesPerLog: number
   ) {
     this.logDir = `${LOG_WRITER_CONFIG.dirName}/${config.ARCHIVER_IP}_${config.ARCHIVER_PORT}`
     this.maxLogCounter = LOG_WRITER_CONFIG.maxLogFiles
@@ -37,7 +37,7 @@ class DataLogWriter {
     this.activeLogFileName = `active-${dataName}-log.txt`
     this.activeLogFilePath = path.join(this.logDir, this.activeLogFileName)
     this.dataLogFilePath = path.join(this.logDir, `${dataName}-log${logCounter}.txt`)
-    this.totalNumberOfBytes = 0
+    this.totalNumberOfEntries = 0
     this.writeQueue = []
     this.isWriting = false
   }
@@ -58,16 +58,18 @@ class DataLogWriter {
           console.log(`> DataLogWriter: Active log file: ${this.dataName}-log${this.logCounter}.txt`)
           this.dataLogFilePath = path.join(this.logDir, `${this.dataName}-log${this.logCounter}.txt`)
           // eslint-disable-next-line security/detect-non-literal-fs-filename
-          const stats = await fs.stat(this.dataLogFilePath)
-          this.totalNumberOfBytes += stats.size
-          console.log(`> DataLogWriter: Total ${this.dataName} Bytes: ${this.totalNumberOfBytes}`)
+          const data = await fs.readFile(this.dataLogFilePath, {
+            encoding: 'utf8',
+          })
+          this.totalNumberOfEntries += data.split('\n').length - 1
+          console.log(`> DataLogWriter: Total ${this.dataName} Entries: ${this.totalNumberOfEntries}`)
           // eslint-disable-next-line security/detect-non-literal-fs-filename
           this.dataLogWriteStream = createWriteStream(this.dataLogFilePath, { flags: 'a' })
-          if (this.totalNumberOfBytes >= this.maxNumberBytesPerLog) {
-            // Finish the log file with the total number of bytes.
-            await this.appendData(`End: Number of bytes: ${this.totalNumberOfBytes}\n`)
+          if (this.totalNumberOfEntries >= this.maxNumberEntriesPerLog) {
+            // Finish the log file with the total number of entries.
+            await this.appendData(`End: Number of entries: ${this.totalNumberOfEntries}\n`)
             await this.endStream()
-            this.totalNumberOfBytes = 0
+            this.totalNumberOfEntries = 0
             await this.rotateLogFile()
             await this.setActiveLog()
           }
@@ -156,17 +158,17 @@ class DataLogWriter {
     while (this.writeQueue.length) {
       try {
         for (let i = 0; i < this.writeQueue.length; i++) {
-          if (this.totalNumberOfBytes >= this.maxNumberBytesPerLog) {
-            await this.appendData(`End: Number of bytes: ${this.totalNumberOfBytes}\n`)
+          if (this.totalNumberOfEntries === this.maxNumberEntriesPerLog) {
+            await this.appendData(`End: Number of entries: ${this.totalNumberOfEntries}\n`)
             await this.endStream()
-            this.totalNumberOfBytes = 0
+            this.totalNumberOfEntries = 0
             await this.rotateLogFile()
             await this.setActiveLog()
           }
           // eslint-disable-next-line security/detect-object-injection
           await this.appendData(this.writeQueue[i])
           this.dataWriteIndex += 1
-          this.totalNumberOfBytes += Buffer.byteLength(this.writeQueue[i], 'utf8')
+          this.totalNumberOfEntries += 1
         }
         // console.log('-->> Write queue length: ', this.writeQueue.length)
         this.writeQueue.splice(0, this.dataWriteIndex)
@@ -195,7 +197,7 @@ class DataLogWriter {
 
   appendData(data: string): Promise<void> {
     // Check if we should continue writing
-    const canContinueToWrite = this.dataLogWriteStream!.write(data + '\n')
+    const canContinueToWrite = this.dataLogWriteStream!.write(data)
 
     if (!canContinueToWrite) {
       // Wait for drain event to continue writing
@@ -210,7 +212,7 @@ class DataLogWriter {
     return new Promise((resolve, reject) => {
       try {
         this.dataLogWriteStream!.end(() => {
-          console.log(`✅ Finished writing ${this.totalNumberOfBytes} bytes.`)
+          console.log(`✅ Finished writing ${this.totalNumberOfEntries}.`)
           resolve()
         })
       } catch (e) {
@@ -236,10 +238,10 @@ export let ReceiptOverwriteLogWriter: DataLogWriter
  * @returns {Promise<void>} A promise that resolves when all log writers are initialized.
  */
 export async function initDataLogWriter(): Promise<void> {
-  CycleLogWriter = new DataLogWriter('cycle', 1, LOG_WRITER_CONFIG.maxCycleBytes)
-  ReceiptLogWriter = new DataLogWriter('receipt', 1, LOG_WRITER_CONFIG.maxReceiptBytes)
-  OriginalTxDataLogWriter = new DataLogWriter('originalTx', 1, LOG_WRITER_CONFIG.maxOriginalTxBytes)
-  ReceiptOverwriteLogWriter = new DataLogWriter('receiptOverwrite', 1, LOG_WRITER_CONFIG.maxOriginalTxBytes)
+  CycleLogWriter = new DataLogWriter('cycle', 1, LOG_WRITER_CONFIG.maxCycleEntries)
+  ReceiptLogWriter = new DataLogWriter('receipt', 1, LOG_WRITER_CONFIG.maxReceiptEntries)
+  OriginalTxDataLogWriter = new DataLogWriter('originalTx', 1, LOG_WRITER_CONFIG.maxOriginalTxEntries)
+  ReceiptOverwriteLogWriter = new DataLogWriter('receiptOverwrite', 1, LOG_WRITER_CONFIG.maxOriginalTxEntries)
   await Promise.all([
     CycleLogWriter.init(),
     ReceiptLogWriter.init(),

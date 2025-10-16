@@ -57,11 +57,11 @@ export interface Config {
   }
   dataLogWrite: boolean
   dataLogWriter: {
-    dirName: string
-    maxLogFiles: number
-    maxReceiptBytes: number
-    maxCycleBytes: number
-    maxOriginalTxBytes: number
+    dirName: 'data-logs'
+    maxLogFiles: 10
+    maxReceiptEntries: 10000 // Should be >= max TPS experienced by the network.
+    maxCycleEntries: 500
+    maxOriginalTxEntries: 10000 // Should be >= max TPS experienced by the network.
   }
   experimentalSnapshot: boolean
   failedBucketsDir: string

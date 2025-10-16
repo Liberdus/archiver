@@ -57,11 +57,11 @@ export interface Config {
   }
   dataLogWrite: boolean
   dataLogWriter: {
-    dirName: 'data-logs'
-    maxLogFiles: 10
-    maxReceiptEntries: 10000 // Should be >= max TPS experienced by the network.
-    maxCycleEntries: 500
-    maxOriginalTxEntries: 10000 // Should be >= max TPS experienced by the network.
+    dirName: string
+    maxLogFiles: number
+    maxReceiptEntries: number
+    maxCycleEntries: number
+    maxOriginalTxEntries: number
   }
   experimentalSnapshot: boolean
   failedBucketsDir: string
@@ -179,10 +179,10 @@ let config: Config = {
   dataLogWrite: true,
   dataLogWriter: {
     dirName: 'data-logs',
-    maxLogFiles: 20,
-    maxReceiptBytes: 10 * 1024 * 1024, // 1MB - Should be >= max TPS * avg receipt size
-    maxCycleBytes: 10 * 1024 * 1024, // 50KB - cycles are smaller
-    maxOriginalTxBytes: 10 * 1024 * 1024, // 1MB - Should be >= max TPS * avg tx size
+    maxLogFiles: 10,
+    maxReceiptEntries: 10000, // Should be >= max TPS experienced by the network.
+    maxCycleEntries: 500,
+    maxOriginalTxEntries: 10000, // Should be >= max TPS experienced by the network.
   },
   experimentalSnapshot: true,
   failedBucketsDir: 'failed-buckets',

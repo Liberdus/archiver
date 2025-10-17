@@ -686,7 +686,7 @@ export async function checkIfValidOverwrite(receipt: any, txId: string): Promise
       )
     if (nestedCountersInstance) nestedCountersInstance.countEvent('duplicate-receipts', `txId : ${txId}`)
 
-    // Liberdus App Receipt 
+    // Liberdus App Receipt
     const existingStatus = existingReceipt.appReceiptData.success
     if (existingStatus === true) {
       return false // you cannot override a successful receipt (status 1) with any new receipt
@@ -938,7 +938,8 @@ export const storeReceiptData = async (
 
               const accountExist = await Account.queryAccountByAccountId(account.accountId)
               if (accountExist) {
-                if (accObj.timestamp > accountExist.timestamp) await Account.updateAccount(accObj)
+                // if (accObj.timestamp > accountExist.timestamp) await Account.updateAccount(accObj)
+                combineAccounts.push(accObj)
               } else {
                 // await Account.insertAccount(accObj)
                 combineAccounts.push(accObj)
@@ -999,7 +1000,8 @@ export const storeReceiptData = async (
 
             const accountExist = await Account.queryAccountByAccountId(account.accountId)
             if (accountExist) {
-              if (accObj.timestamp > accountExist.timestamp) await Account.updateAccount(accObj)
+              // if (accObj.timestamp > accountExist.timestamp) await Account.updateAccount(accObj)
+              combineAccounts.push(accObj)
             } else {
               combineAccounts.push(accObj)
             }

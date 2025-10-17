@@ -25,7 +25,14 @@ export async function insertAccount(account: AccountsCopy): Promise<void> {
 
     // Construct the SQL query with placeholders
     const placeholders = `(${columns.map(() => '?').join(', ')})`
-    const sql = `INSERT OR REPLACE INTO accounts (${columns.join(', ')}) VALUES ${placeholders}`
+    const sql = `INSERT INTO accounts (${columns.join(', ')}) VALUES ${placeholders}
+      ON CONFLICT(accountId) DO UPDATE SET
+        cycleNumber = excluded.cycleNumber,
+        timestamp = excluded.timestamp,
+        data = excluded.data,
+        hash = excluded.hash,
+        isGlobal = excluded.isGlobal
+      WHERE excluded.timestamp > accounts.timestamp`
 
     // Map the `account` object to match the columns
     const values = columns.map((column) =>
@@ -66,7 +73,14 @@ export async function bulkInsertAccounts(accounts: AccountsCopy[]): Promise<void
         try {
           // Construct the SQL query for this batch
           const placeholders = batch.map(() => `(${columns.map(() => '?').join(', ')})`).join(', ')
-          const sql = `INSERT OR REPLACE INTO accounts (${columns.join(', ')}) VALUES ${placeholders}`
+          const sql = `INSERT INTO accounts (${columns.join(', ')}) VALUES ${placeholders}
+            ON CONFLICT(accountId) DO UPDATE SET
+              cycleNumber = excluded.cycleNumber,
+              timestamp = excluded.timestamp,
+              data = excluded.data,
+              hash = excluded.hash,
+              isGlobal = excluded.isGlobal
+            WHERE excluded.timestamp > accounts.timestamp`
 
           // Flatten the batch into a single list of values
           const values = batch.flatMap((account) =>

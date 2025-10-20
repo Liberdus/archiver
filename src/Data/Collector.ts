@@ -936,10 +936,9 @@ export const storeReceiptData = async (
               if (account.hash !== account.data['hash'])
                 Logger.mainLogger.error('Mismatched account hash', txId, account.accountId)
 
-              const accountExist = await Account.queryAccountByAccountId(account.accountId)
-              if (accountExist) {
-                // if (accObj.timestamp > accountExist.timestamp) await Account.updateAccount(accObj)
-                combineAccounts.push(accObj)
+              const existingAccountTimestamp = await Account.queryAccountTimestamp(account.accountId)
+              if (existingAccountTimestamp) {
+                if (accObj.timestamp > existingAccountTimestamp) combineAccounts.push(accObj)
               } else {
                 // await Account.insertAccount(accObj)
                 combineAccounts.push(accObj)
@@ -998,10 +997,9 @@ export const storeReceiptData = async (
               Logger.mainLogger.error('Mismatched account hash', txId, account.accountId)
             }
 
-            const accountExist = await Account.queryAccountByAccountId(account.accountId)
-            if (accountExist) {
-              // if (accObj.timestamp > accountExist.timestamp) await Account.updateAccount(accObj)
-              combineAccounts.push(accObj)
+            const existingAccountTimestamp = await Account.queryAccountByAccountId(account.accountId)
+            if (existingAccountTimestamp) {
+              if (accObj.timestamp > existingAccountTimestamp.timestamp) combineAccounts.push(accObj)
             } else {
               combineAccounts.push(accObj)
             }

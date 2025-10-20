@@ -167,6 +167,18 @@ export async function queryAccountByAccountId(accountId: string): Promise<Accoun
   }
 }
 
+export async function queryAccountTimestamp(accountId: string): Promise<number | null> {
+  try {
+    const sql = `SELECT timestamp FROM accounts WHERE accountId=?`
+    const dbAccount = (await db.get(accountDatabase, sql, [accountId])) as DbAccountCopy
+    if (dbAccount) return dbAccount.timestamp
+    return null
+  } catch (e) {
+    Logger.mainLogger.error(e)
+    return null
+  }
+}
+
 export async function queryLatestAccounts(count: number): Promise<AccountsCopy[] | null> {
   if (!Number.isInteger(count)) {
     Logger.mainLogger.error('queryLatestAccounts - Invalid count value')

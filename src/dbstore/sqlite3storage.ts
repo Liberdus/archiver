@@ -10,6 +10,10 @@ export const createDB = async (dbPath: string, dbName: string): Promise<Database
     }
   })
   await run(db, 'PRAGMA journal_mode=WAL')
+  await run(db, 'PRAGMA synchronous = NORMAL;');
+  await run(db, 'PRAGMA temp_store = MEMORY;');
+  await run(db, 'PRAGMA cache_size = -64000;');       // ~64MB cache
+  await run(db, 'PRAGMA wal_autocheckpoint = 1000;'); // Checkpoint every 1000 ( default value ) pages
   db.on('profile', (sql, time) => {
     if (time > 500 && time < 1000) {
       console.log('SLOW QUERY', process.pid, sql, time)

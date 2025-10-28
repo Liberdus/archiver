@@ -762,7 +762,6 @@ export const storeReceiptData = async (
 
       const timestamp = receipt?.tx?.timestamp
       if (!txId || !timestamp) {
-        logReceiptData(receipt)
         continue
       }
       if (
@@ -771,7 +770,6 @@ export const storeReceiptData = async (
           (receiptsInValidationMap.has(txId) && receiptsInValidationMap.get(txId) === timestamp))
       ) {
         if (config.VERBOSE) console.log('RECEIPT', 'Skip', txId, timestamp, senderInfo)
-        logReceiptData(receipt, txId, timestamp)
         continue
       }
       if (config.VERBOSE) console.log('RECEIPT', 'Validate', txId, timestamp, senderInfo)
@@ -783,7 +781,6 @@ export const storeReceiptData = async (
         receiptsInValidationMap.delete(txId)
         if (nestedCountersInstance) nestedCountersInstance.countEvent('receipt', 'Invalid_receipt_validation_failed')
         if (profilerInstance) profilerInstance.profileSectionEnd('Validate_receipt')
-        logReceiptData(receipt, txId, timestamp)
         continue
       }
 
@@ -791,7 +788,6 @@ export const storeReceiptData = async (
         // only consider this for EVM txns and Non Global Internal Txns
         const result = await checkIfValidOverwrite(receipt, txId)
         if (!result && checkpoint) {
-          logReceiptData(receipt, txId, timestamp)
           continue // if the incoming receipt has a status of 0, do not allow it to overwrite a receipt of status 1
         }
       }
@@ -830,7 +826,6 @@ export const storeReceiptData = async (
             if (nestedCountersInstance)
               nestedCountersInstance.countEvent('receipt', 'Invalid_receipt_verification_failed')
             if (profilerInstance) profilerInstance.profileSectionEnd('Validate_receipt')
-            logReceiptData(receipt, txId, timestamp)
             continue
           }
 
@@ -847,7 +842,6 @@ export const storeReceiptData = async (
             if (nestedCountersInstance)
               nestedCountersInstance.countEvent('receipt', 'Invalid_receipt_verification_failed')
             if (profilerInstance) profilerInstance.profileSectionEnd('Verify_archiver_receipt')
-            logReceiptData(receipt, txId, timestamp)
             continue
           }
           // console.log('offload receipt result', txId, timestamp, result)
@@ -866,7 +860,6 @@ export const storeReceiptData = async (
           if (result.success === false) {
             receiptsInValidationMap.delete(txId)
             if (profilerInstance) profilerInstance.profileSectionEnd('Validate_receipt')
-            logReceiptData(receipt, txId, timestamp)
             continue
           }
         }

@@ -56,12 +56,16 @@ const runProgram = async (): Promise<void> => {
   }
   // If there is a validator config in the listOfChanges that need to be overridden at the network restart, we can add it here. eg:
   // networkAccount.data.listOfChanges.push({ change: { p2p: { minNodes: 150 } }, cycle: 55037 })
+  // networkAccount.data.listOfChanges.push({
+  //   appData: { activeVersion, latestVersion, minVersion },
+  //   cycle: 0, // Set shutdown cycle number for tracking of the config changes
+  // })
 
   const calculatedAccountHash = accountSpecificHash(networkAccount.data)
 
   networkAccount.hash = calculatedAccountHash
   networkAccount.data.hash = calculatedAccountHash
-  await AccountDB.insertAccount(networkAccount)
+  await AccountDB.updateAccount(networkAccount)
   console.log('Network account after', networkAccount)
   await dbstore.closeDatabase()
 }

@@ -969,10 +969,7 @@ async function syncFromNetworkConfig(): Promise<any> {
         updateConfig({ minSigRequiredForArchiverWhitelist })
       }
       if (!allowedArchiversManager.getCurrentConfig() || isAllowedArchiversUpdateNeeded)
-        allowedArchiversManager.setGlobalAccountConfig(
-          config.multisigKeys,
-          config.minSigRequiredForArchiverWhitelist
-        )
+        allowedArchiversManager.setGlobalAccountConfig(config.multisigKeys, config.minSigRequiredForArchiverWhitelist)
     }
     return tallyItem
   } catch (error) {
@@ -2971,9 +2968,11 @@ function validateCerts(
 
       return false
     }
-    if (NodeList.activeListByIdSorted.some((node) => node.publicKey === cleanCert.sign.owner) === false) {
+    // Check if the cert signer is a valid node in the network (must be in joined, syncing, or active lists)
+    // https://github.com/shardeum/core/blob/32d29a0a29ea610b9797ca98b929666eb9e20247/src/p2p/CycleCreator.ts#L1030
+    if (NodeList.byPublicKey.has(cleanCert.sign.owner) === false) {
       nestedCountersInstance.countEvent('validateCerts', 'badOwner', 1)
-      Logger.mainLogger.warn(`validateCerts: bad owner ${cleanCert.sign.owner} not found in active nodes`)
+      Logger.mainLogger.warn(`validateCerts: bad owner ${cleanCert.sign.owner} not found in nodes list`)
       return false
     }
     if (certSigners.has(cert.sign.owner)) {

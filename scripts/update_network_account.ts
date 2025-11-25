@@ -58,6 +58,7 @@ const runProgram = async (): Promise<void> => {
   // networkAccount.data.listOfChanges.push({ change: { p2p: { minNodes: 150 } }, cycle: 55037 })
   // networkAccount.data.listOfChanges.push({
   //   appData: { activeVersion, latestVersion, minVersion },
+  //   change: {},
   //   cycle: 0, // Set shutdown cycle number for tracking of the config changes
   // })
 

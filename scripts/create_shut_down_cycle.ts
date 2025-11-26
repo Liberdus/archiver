@@ -342,14 +342,14 @@ async function getActiveNodesAtCycle(
         continue
       }
       if (unRewardedNodeIds.has(nodeId)) {
-        unRewardedNodesMap.set(nodePubKey, nodeId)
+        unRewardedNodesMap.set(nodeId, nodePubKey)
         unRewardedNodeIds.delete(nodeId)
       }
       if (removedNodeIds.has(nodeId)) {
         continue
       }
       if (activeNodesMap.size !== activeNodesCount) {
-        activeNodesMap.set(nodePubKey, nodeId)
+        activeNodesMap.set(nodeId, nodePubKey)
       }
     }
 
@@ -382,7 +382,7 @@ async function getActiveNodesAtCycle(
 
   // Add unrewarded nodes to the active set
   for (const [nodeId, publicKey] of unRewardedNodesMap) {
-    activeNodesMap.set(publicKey, nodeId)
+    activeNodesMap.set(nodeId, publicKey)
   }
 
   console.log(`Found ${activeNodesMap.size} active nodes at cycle ${cycle.counter}:`)

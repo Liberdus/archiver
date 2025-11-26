@@ -251,7 +251,7 @@ async function buildTxList(cycle: P2PTypes.CycleCreatorTypes.CycleData): Promise
     const txHash = Crypto.hashObj(rewardTxData)
 
     const entry: TransactionEntry = {
-      hash: nodeId,
+      hash: txHash,
       tx: {
         cycle: shutdownCycleNumber,
         hash: txHash,

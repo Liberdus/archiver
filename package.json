@@ -1,6 +1,6 @@
 {
   "name": "@liberdus/archiver",
-  "version": "3.7.8-prerelease.0",
+  "version": "3.7.9",
   "engines": {
     "node": "20.19.3"
   },

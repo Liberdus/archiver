@@ -7,7 +7,7 @@ import * as dbstore from '../src/dbstore'
 import * as AccountDB from '../src/dbstore/accounts'
 import { startSaving } from '../src/saveConsoleOutput'
 import * as Logger from '../src/Logger'
-import { accountSpecificHash } from '../src/shardeum/calculateAccountHash'
+import { calculateAccountHash } from '../src/shardeum/calculateAccountHash'
 import { addSigListeners } from '../src/State'
 import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
 import { initAjvSchemas } from '../src/types/ajv/Helpers'
@@ -62,7 +62,7 @@ const runProgram = async (): Promise<void> => {
   //   cycle: 0, // Set shutdown cycle number for tracking of the config changes
   // })
 
-  const calculatedAccountHash = accountSpecificHash(networkAccount.data)
+  const calculatedAccountHash = calculateAccountHash(networkAccount.data)
 
   networkAccount.hash = calculatedAccountHash
   networkAccount.data.hash = calculatedAccountHash

@@ -1123,8 +1123,7 @@ export async function subscribeNodeFromThisSubset(
   let newSenderInfo = nodeList[Math.floor(Math.random() * nodeList.length)]
   let connectionStatus = false
   let retry = 0
-  const MAX_RETRY_SUBSCRIPTION = 3 * numberOfNodesToSubsribe
-  while (retry < MAX_RETRY_SUBSCRIPTION && subscribedNodesFromThisSubset.length < numberOfNodesToSubsribe) {
+  while (subscribedNodesFromThisSubset.length < numberOfNodesToSubsribe) {
     if (!dataSenders.has(newSenderInfo.publicKey)) {
       connectionStatus = await createDataTransferConnection(newSenderInfo)
       if (connectionStatus) {
@@ -1151,6 +1150,17 @@ export async function subscribeNodeFromThisSubset(
     } else {
       subsetList = [...nodeList]
       retry++
+      // Linear delay (retry * 1s, max 5s) when subsetList runs out
+      const delay = Math.min(retry, 5) * 1000
+      Logger.mainLogger.debug(`subsetList exhausted, retry ${retry}, waiting ${delay}ms`)
+      if (retry > 10) {
+        Logger.fatalLogger.fatal(
+          `subscribeNodeFromThisSubset: failed to subscribe after ${retry} retries, nodeList: ${JSON.stringify(
+            nodeList
+          )}}`
+        )
+      }
+      await Utils.sleep(delay)
     }
   }
 }

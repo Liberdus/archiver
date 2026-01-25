@@ -466,7 +466,7 @@ export function collectCycleData(
           dataSize: StringUtils.safeStringify(cycle).length,
         },
       })
-      break
+      continue
     }
 
     nestedCountersInstance.countEvent('collectCycleData', 'process_cycle_' + cycle.mode, 1)

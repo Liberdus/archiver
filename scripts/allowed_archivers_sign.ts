@@ -47,6 +47,9 @@ async function generateSignature(): Promise<void> {
       signatures,
     }
     console.log(allowedArchivers)
+
+    // Write the updated config
+    fs.writeFileSync('./allowed-archivers.json', JSON.stringify(allowedArchivers, null, 4))
   } catch (error) {
     console.error('Error generating signature:', error)
     process.exit(1)

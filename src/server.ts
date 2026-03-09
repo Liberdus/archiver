@@ -310,6 +310,12 @@ function initProfiler(server: FastifyInstance): void {
   statistics.startSnapshots()
   statistics.on('snapshot', memoryReportingInstance.updateCpuPercent)
 
+  // Log CPU and memory resource usage every 5 minutes
+  const RESOURCE_LOG_INTERVAL_MS = 5 * 60 * 1000
+  setInterval(() => {
+    Logger.mainLogger.info(memoryReporter.getResourceReport())
+  }, RESOURCE_LOG_INTERVAL_MS)
+
   // ========== ENDPOINTS ==========
   memoryReporter.registerEndpoints()
   nestedCounter.registerEndpoints()

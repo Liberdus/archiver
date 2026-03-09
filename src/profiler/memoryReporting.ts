@@ -174,6 +174,23 @@ class MemoryReporting {
     this.systemProcessReport()
   }
 
+  getResourceReport(): string {
+    const now = Date.now()
+    const toMB = 1 / 1000000
+    const mem = process.memoryUsage()
+    let outputStr = `Resource Usage Report. Timestamp: ${now}\n`
+    outputStr += `rss: ${(mem.rss * toMB).toFixed(2)} MB\n`
+    outputStr += `heapTotal: ${(mem.heapTotal * toMB).toFixed(2)} MB\n`
+    outputStr += `heapUsed: ${(mem.heapUsed * toMB).toFixed(2)} MB\n`
+    outputStr += `external: ${(mem.external * toMB).toFixed(2)} MB\n`
+    if (typeof mem.arrayBuffers !== 'undefined') {
+      outputStr += `arrayBuffers: ${(mem.arrayBuffers * toMB).toFixed(2)} MB\n`
+    }
+    this.gatherReport()
+    outputStr = this.reportToStream(this.report, outputStr)
+    return outputStr
+  }
+
   getCPUTimes(): object[] {
     const cpus = os.cpus()
     const times = []

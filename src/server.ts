@@ -424,7 +424,8 @@ async function validateAndSyncCycleData(lastStoredCycleCount: number, lastStored
 
   const { totalCycles, totalReceipts } = response
   const lastStoredReceiptCount = await ReceiptDB.queryReceiptCount()
-
+  Logger.mainLogger.debug('totalCycles', totalCycles, 'lastStoredCycleCount', lastStoredCycleCount)
+  Logger.mainLogger.debug('totalReceipts', totalReceipts, 'lastStoredReceiptCount', lastStoredReceiptCount)
   if (lastStoredReceiptCount > totalReceipts || lastStoredCycleCount > totalCycles) {
     throw Error('The existing db has more data than the network data! Clear the DB and start the server again!')
   }

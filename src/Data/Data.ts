@@ -998,16 +998,18 @@ export async function getConsensusRadius(): Promise<number> {
     }
     if (nodesPerConsensusGroup === nodesPerConsensusGroupFromConfig && nodesPerEdge === nodesPerEdgeFromConfig)
       return currentConsensusRadius
-    nodesPerConsensusGroup = nodesPerConsensusGroupFromConfig
-    nodesPerEdge = nodesPerEdgeFromConfig
+    let newNodesPerConsensusGroup = nodesPerConsensusGroupFromConfig
     // Upgrading consensus size to an odd number
-    if (nodesPerConsensusGroup % 2 === 0) nodesPerConsensusGroup++
-    const consensusRadius = Math.floor((nodesPerConsensusGroup - 1) / 2)
+    if (newNodesPerConsensusGroup % 2 === 0) newNodesPerConsensusGroup++
+    const consensusRadius = Math.floor((newNodesPerConsensusGroup - 1) / 2)
     // Validation: Ensure consensusRadius is a number and greater than zero
     if (typeof consensusRadius !== 'number' || isNaN(consensusRadius) || consensusRadius <= 0) {
       Logger.mainLogger.error('Invalid consensusRadius:', consensusRadius)
       return currentConsensusRadius // Return the existing currentConsensusRadius in case of invalid consensusRadius
     }
+    nodesPerConsensusGroup = newNodesPerConsensusGroup
+    nodesPerEdge = nodesPerEdgeFromConfig
+    currentConsensusRadius = consensusRadius
     Logger.mainLogger.debug(
       'consensusRadius',
       consensusRadius,
@@ -1056,7 +1058,6 @@ export async function createNodesGroupByConsensusRadius(): Promise<void> {
     Logger.mainLogger.error('Consensus radius is 0, unable to create nodes group.')
     return // Early return to prevent further execution
   }
-  currentConsensusRadius = consensusRadius
   const activeList = [...NodeList.activeListByIdSorted]
   if (config.VERBOSE) Logger.mainLogger.debug('activeList', activeList.length, activeList)
   let totalNumberOfNodesToSubscribe = Math.ceil(activeList.length / consensusRadius)
@@ -1788,7 +1789,7 @@ export async function syncCyclesAndNodeListV2(
   Logger.mainLogger.debug('cycleToSyncTo', cycleToSyncTo)
   Logger.mainLogger.debug(`Syncing till cycle ${cycleToSyncTo.counter}...`)
 
-  currentConsensusRadius = await getConsensusRadius()
+  await getConsensusRadius()
   await processCycles([cycleToSyncTo])
 
   // Download old cycle Records

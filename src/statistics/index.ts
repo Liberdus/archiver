@@ -303,7 +303,7 @@ class Ring {
   average(): number {
     let sum = 0
     let total = 0
-    console.log('elements', this.elements)
+    // console.log('elements', this.elements)
     for (const element of this.elements) {
       if (_exists(element)) {
         sum += Number(element)

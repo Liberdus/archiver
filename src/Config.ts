@@ -212,8 +212,8 @@ let config: Config = {
       GiveUpAge: 20 * 60, // 20 minutes
       lastFailedBucketDuration: 5 * 60 * 1000, // 5 minutes
       RadixDepth: 2, // 2 nibbles (1 hex char)
-      allowCheckpointUpdates: false,
-      allowCheckpointStorage: false,
+      allowCheckpointUpdates: true,
+      allowCheckpointStorage: true,
     },
     batchSize: 100,
     updateInterval: 60 * 1000, // 1 minute in milliseconds  in milliseconds

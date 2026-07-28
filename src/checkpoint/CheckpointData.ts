@@ -635,7 +635,7 @@ export class CheckpointBucket<T> {
         radixEntries: Array.from(this.radixEntries.entries()),
         peerDigests: Array.from(this.peerRadixDigests.entries()),
       }
-      const filename = `${config.failedBucketsDir}/failed-bucket-${this.checkpointType}-${this.bucketID}-${this.startTime}.json`
+      const filename = `${config.failedBucketsDir}/${config.ARCHIVER_IP}_${config.ARCHIVER_PORT}/failed-bucket-${this.checkpointType}-${this.bucketID}-${this.startTime}.json`
       if (config.VERBOSE) {
         Logger.mainLogger.debug(`Writing bucket id ${this.bucketID} data to file ${filename}`)
       }

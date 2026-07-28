@@ -764,6 +764,11 @@ export const storeReceiptData = async (
       if (!txId || !timestamp) {
         continue
       }
+      if (senderInfo === 'checkpoint') {
+        Logger.mainLogger.error(
+          `[CHECKPOINT_RECEIPT_RECEIVED] receiptId=${txId}  cycle=${receipt.cycle} timestamp=${timestamp}`
+        )
+      }
       if (
         checkpoint &&
         ((processedReceiptsMap.has(txId) && processedReceiptsMap.get(txId) === timestamp) ||

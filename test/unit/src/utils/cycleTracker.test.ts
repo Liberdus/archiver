@@ -15,6 +15,7 @@ jest.mock('../../../../src/dbstore/index', () => ({}))
 jest.mock('../../../../src/dbstore/checkpointStatus')
 jest.mock('../../../../src/Config', () => ({
   config: {
+    ARCHIVER_DB: '/tmp/archiver-db',
     checkpoint: {
       bucketConfig: {
         GiveUpAge: 20,
@@ -42,7 +43,7 @@ const mockGetCheckpointStatusesByUnifiedStatus = getCheckpointStatusesByUnifiedS
 >
 
 describe('cycleTracker', () => {
-  const CYCLE_TRACKER_FILE = path.join(process.cwd(), 'cycle-tracker.json')
+  const CYCLE_TRACKER_FILE = path.join(config.ARCHIVER_DB, 'cycle-tracker.json')
   const mockDate = new Date('2024-01-15T10:30:00Z').getTime()
 
   beforeEach(() => {

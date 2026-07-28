@@ -99,6 +99,7 @@ async function start(): Promise<void> {
   // Initialize storage and checkpoints
   if (config.experimentalSnapshot) {
     await dbstore.initializeDB(config)
+    getLastUpdatedCycle()
   } else {
     await Storage.initStorage(config)
   }
@@ -246,8 +247,8 @@ async function start(): Promise<void> {
     scheduleMultiSigKeysSyncFromNetConfig()
   }, 60 * 1000) // Start after 60 seconds
 
-  // Create the failed buckets directory
-  createDirectories(config.failedBucketsDir)
+  // Create the failed buckets directory for this archiver instance
+  createDirectories(`${config.failedBucketsDir}/${config.ARCHIVER_IP}_${config.ARCHIVER_PORT}`)
 
   // Initialize checkpoint V2 system if enabled and checkpoint updates and storage are allowed
   if (config.checkpoint.bucketConfig.allowCheckpointUpdates) {

@@ -9,18 +9,22 @@ interface CycleTrackerData {
   lastUpdatedTimestamp: number
 }
 
-const CYCLE_TRACKER_FILE = path.join(process.cwd(), 'cycle-tracker.json')
+function getCycleTrackerFile(): string {
+  return path.join(config.ARCHIVER_DB, 'cycle-tracker.json')
+}
 
 /**
  * Gets the last updated cycle from the tracker file
  * @returns The last updated cycle number, or 0 if not found
  */
 export function getLastUpdatedCycle(): number {
+  const cycleTrackerFile = getCycleTrackerFile()
+
   try {
     let data: string
 
     try {
-      data = fs.readFileSync(CYCLE_TRACKER_FILE, 'utf8')
+      data = fs.readFileSync(cycleTrackerFile, 'utf8')
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         const trackerData: CycleTrackerData = {
@@ -30,16 +34,17 @@ export function getLastUpdatedCycle(): number {
 
         try {
           const fd = fs.openSync(
-            CYCLE_TRACKER_FILE,
+            cycleTrackerFile,
             fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_WRONLY,
             0o600
           )
           fs.writeFileSync(fd, JSON.stringify(trackerData, null, 2), 'utf8')
           fs.closeSync(fd)
+          Logger.mainLogger.debug(`Created cycle tracker file at ${cycleTrackerFile}`)
           return 0
         } catch (createError) {
           if ((createError as NodeJS.ErrnoException).code === 'EEXIST') {
-            data = fs.readFileSync(CYCLE_TRACKER_FILE, 'utf8')
+            data = fs.readFileSync(cycleTrackerFile, 'utf8')
           } else {
             throw createError
           }
@@ -70,7 +75,7 @@ export function updateLastUpdatedCycle(cycle: number): void {
         lastUpdatedTimestamp: Date.now(),
       }
 
-      fs.writeFileSync(CYCLE_TRACKER_FILE, JSON.stringify(trackerData, null, 2), 'utf8')
+      fs.writeFileSync(getCycleTrackerFile(), JSON.stringify(trackerData, null, 2), 'utf8')
       Logger.mainLogger.debug(`Updated cycle tracker to cycle ${cycle}`)
     } catch (error) {
       Logger.mainLogger.error('Error updating cycle tracker file:', error)

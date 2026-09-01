@@ -2,7 +2,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 import { ethers } from 'ethers'
 import { Utils as StringUtils } from '@shardus/lib-types'
-import { allowedArchiversManager } from '../../../../src/liberdus/allowedArchiversManager'
+import { allowedArchiversManager } from '../../../../src/app/allowedArchiversManager'
 import * as Logger from '../../../../src/Logger'
 import { DevSecurityLevel } from '../../../../src/types/security'
 

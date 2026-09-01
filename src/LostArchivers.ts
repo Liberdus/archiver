@@ -8,7 +8,7 @@ import { calcIncomingTimes } from './Data/Data'
 import { postJson } from './P2P'
 import { sign } from './Crypto'
 import { SignedObject } from '@shardus/lib-types/build/src/p2p/P2PTypes'
-import { allowedArchiversManager } from './liberdus/allowedArchiversManager'
+import { allowedArchiversManager } from './app/allowedArchiversManager'
 
 let shouldSendRefutes = false
 

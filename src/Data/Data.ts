@@ -47,7 +47,7 @@ import { customFetch } from '../utils/customHttpFunctions'
 import { ArchiverLogging } from '../profiler/archiverLogging'
 import { Utils as UtilsTypes } from '@shardus/lib-types'
 import { logEnvSetup } from '../utils/environment'
-import { allowedArchiversManager } from '../liberdus/allowedArchiversManager'
+import { allowedArchiversManager } from '../app/allowedArchiversManager'
 
 interface ValidationBreadcrumb {
   cycle: P2PTypes.CycleCreatorTypes.CycleData

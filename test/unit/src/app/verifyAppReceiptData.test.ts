@@ -1,5 +1,5 @@
 import * as crypto from '../../../../src/Crypto'
-import { verifyAppReceiptData, ShardeumReceipt } from '../../../../src/liberdus/verifyAppReceiptData'
+import { verifyAppReceiptData, ShardeumReceipt } from '../../../../src/app/verifyAppReceiptData'
 import { verifyPayload } from '../../../../src/types/ajv/Helpers'
 import { AJVSchemaEnum } from '../../../../src/types/enum/AJVSchemaEnum'
 import { Utils as StringUtils } from '@shardus/lib-types'

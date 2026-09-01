@@ -3,7 +3,7 @@ import * as Crypto from '../../../../src/Crypto'
 import * as Logger from '../../../../src/Logger'
 import { insertReceipt } from '../../../../src/dbstore/receipts'
 import { CheckpointType } from '../../../../src/checkpoint/CheckpointData'
-import { verifyAppReceiptData } from '../../../../src/liberdus/verifyAppReceiptData'
+import { verifyAppReceiptData } from '../../../../src/app/verifyAppReceiptData'
 import {
   ReceiptCheckpointData,
   calculateBucketID,

@@ -11,7 +11,7 @@ import {
 import { Receipt as ReceiptType, ArchiverReceipt, SignedReceipt, insertReceipt } from '../dbstore/receipts'
 import * as Logger from '../Logger'
 import * as Crypto from '../Crypto'
-import { verifyAppReceiptData } from '../liberdus/verifyAppReceiptData'
+import { verifyAppReceiptData } from '../app/verifyAppReceiptData'
 import { Utils as StringUtils } from '@shardus/lib-types'
 import { storeReceiptData } from '../Data/Collector'
 

@@ -3,8 +3,8 @@ import {
   verifyGlobalTxAccountChange,
   InternalTXType,
   SetGlobalTxValue,
-} from '../../../../src/liberdus/verifyGlobalTxReceipt'
-import { accountSpecificHash } from '../../../../src/liberdus/calculateAccountHash'
+} from '../../../../src/app/verifyGlobalTxReceipt'
+import { accountSpecificHash } from '../../../../src/app/calculateAccountHash'
 import { ArchiverReceipt, queryInitNetworkReceiptCountBetweenCycles } from '../../../../src/dbstore/receipts'
 import { GlobalTxReceipt } from '@shardus/lib-types/build/src/p2p/GlobalAccountsTypes'
 

@@ -32,7 +32,7 @@ import { receivedReceiptCount, verifiedReceiptCount, successReceiptCount, failur
 import * as ServiceQueue from './ServiceQueue'
 import ticketRoutes from './routes/tickets'
 import { Cycle } from './dbstore/types'
-import { allowedArchiversManager } from './liberdus/allowedArchiversManager'
+import { allowedArchiversManager } from './app/allowedArchiversManager'
 import { CheckpointBucket, CheckpointRadixEntry, CheckpointType } from './checkpoint/CheckpointData'
 import { getCheckpointManager } from './checkpoint/Utils'
 import { CheckpointStatusType, isBucketVerified } from './dbstore/checkpointStatus'

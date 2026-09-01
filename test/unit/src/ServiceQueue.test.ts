@@ -1,4 +1,4 @@
-import { P2P } from '@shardeum-foundation/lib-types'
+import { P2P } from '@shardus/lib-types'
 
 // Mock fs module first
 jest.mock('fs', () => ({
@@ -17,7 +17,7 @@ jest.mock('../../../src/Logger', () => ({
 jest.mock('../../../src/State', () => ({
   getNodeInfo: jest.fn(),
 }))
-jest.mock('@shardeum-foundation/lib-crypto-utils', () => ({
+jest.mock('@shardus/lib-crypto-utils', () => ({
   __esModule: true,
   default: {
     init: jest.fn(),

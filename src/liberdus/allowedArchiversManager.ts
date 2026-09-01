@@ -1,6 +1,6 @@
 import path = require('path')
 import fs = require('fs')
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import * as Logger from '../Logger'
 import { verifyMultiSigs } from '../Utils'
 import { DevSecurityLevel } from '../types/security'

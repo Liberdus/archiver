@@ -4,9 +4,9 @@ import * as Utils from './Utils'
 import * as Logger from './Logger'
 import { config } from './Config'
 import * as Crypto from './Crypto'
-import { P2P as P2PTypes } from '@shardeum-foundation/lib-types'
-import { SignedObject } from '@shardeum-foundation/lib-crypto-utils'
-import { Utils as UtilsTypes } from '@shardeum-foundation/lib-types'
+import { P2P as P2PTypes } from '@shardus/lib-types'
+import { SignedObject } from '@shardus/lib-crypto-utils'
+import { Utils as UtilsTypes } from '@shardus/lib-types'
 // TYPES
 
 export enum NodeStatus {

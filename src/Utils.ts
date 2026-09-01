@@ -1,12 +1,12 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { Utils, Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils, Utils as StringUtils } from '@shardus/lib-types'
 import * as util from 'util'
 import * as Logger from './Logger'
 import { Sign } from './types/internalTxType'
 import { DevSecurityLevel } from './types/security'
 import { ethers } from 'ethers'
-import * as crypto from '@shardeum-foundation/lib-crypto-utils'
+import * as crypto from '@shardus/lib-crypto-utils'
 import { config } from './Config'
 
 export interface CountSchema {

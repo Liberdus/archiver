@@ -124,7 +124,7 @@ describe('DataLogWriter', () => {
 
       expect(mockedReadFile).toHaveBeenCalledWith(expect.stringContaining('active-cycle-log.txt'), 'utf8')
       expect(CycleLogWriter.logCounter).toBe(2)
-      expect(CycleLogWriter.totalNumberOfBytes).toBe(50)
+      expect(CycleLogWriter.totalNumberOfEntries).toBe(50)
     })
 
     it('should rotate log when bytes exceed max', async () => {
@@ -143,7 +143,7 @@ describe('DataLogWriter', () => {
 
       await initDataLogWriter()
 
-      expect(CycleLogWriter.totalNumberOfBytes).toBe(0) // Reset after rotation
+      expect(CycleLogWriter.totalNumberOfEntries).toBe(0) // Reset after rotation
       expect(CycleLogWriter.logCounter).toBe(2) // Incremented
     })
 
@@ -174,7 +174,7 @@ describe('DataLogWriter', () => {
       await CycleLogWriter.writeToLog(testData)
 
       expect(mockWriteStream.write).toHaveBeenCalledWith(testData)
-      expect(CycleLogWriter.totalNumberOfBytes).toBe(15)
+      expect(CycleLogWriter.totalNumberOfEntries).toBe(15)
     })
 
     it('should queue multiple writes', async () => {
@@ -191,7 +191,7 @@ describe('DataLogWriter', () => {
       expect(mockWriteStream.write).toHaveBeenCalledWith(data1)
       expect(mockWriteStream.write).toHaveBeenCalledWith(data2)
       expect(mockWriteStream.write).toHaveBeenCalledWith(data3)
-      expect(CycleLogWriter.totalNumberOfBytes).toBe(21)
+      expect(CycleLogWriter.totalNumberOfEntries).toBe(21)
     })
 
     it('should handle write errors', async () => {
@@ -328,7 +328,7 @@ describe('DataLogWriter', () => {
     })
 
     it('should end stream successfully', async () => {
-      CycleLogWriter.totalNumberOfBytes = 50
+      CycleLogWriter.totalNumberOfEntries = 50
 
       await CycleLogWriter.endStream()
 
@@ -353,14 +353,14 @@ describe('DataLogWriter', () => {
     })
 
     it('should rotate log when reaching max entries during write', async () => {
-      CycleLogWriter.totalNumberOfBytes = 100
-      CycleLogWriter.maxNumberBytesPerLog = 100
+      CycleLogWriter.totalNumberOfEntries = 100
+      CycleLogWriter.maxNumberEntriesPerLog = 100
 
       await CycleLogWriter.writeToLog('final entry\n')
 
       expect(mockWriteStream.write).toHaveBeenCalledWith('End: Number of bytes: 100\n')
       expect(mockWriteStream.end).toHaveBeenCalled()
-      expect(CycleLogWriter.totalNumberOfBytes).toBe(12) // Reset and new entry ('final entry\n')
+      expect(CycleLogWriter.totalNumberOfEntries).toBe(12) // Reset and new entry ('final entry\n')
       expect(CycleLogWriter.logCounter).toBe(2) // Incremented
     })
   })
@@ -378,7 +378,7 @@ describe('DataLogWriter', () => {
       await Promise.all(writes.map((data) => CycleLogWriter.writeToLog(data)))
 
       expect(mockWriteStream.write).toHaveBeenCalledTimes(10)
-      expect(CycleLogWriter.totalNumberOfBytes).toBe(70)
+      expect(CycleLogWriter.totalNumberOfEntries).toBe(10)
     })
 
     it('should maintain write order in queue', async () => {

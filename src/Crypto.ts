@@ -1,6 +1,6 @@
-import * as core from '@shardeum-foundation/lib-crypto-utils'
-import { SignedObject, TaggedObject, publicKey, curvePublicKey, sharedKey } from '@shardeum-foundation/lib-crypto-utils'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import * as core from '@shardus/lib-crypto-utils'
+import { SignedObject, TaggedObject, publicKey, curvePublicKey, sharedKey } from '@shardus/lib-crypto-utils'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import * as State from './State'
 
 // Crypto initialization fns

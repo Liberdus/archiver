@@ -11,7 +11,7 @@ import * as Logger from '../../../../src/Logger'
 import * as cycles from '../../../../src/dbstore/cycles'
 import { config } from '../../../../src/Config'
 import { DataType } from '../../../../src/Data/GossipData'
-import { P2P as P2PTypes } from '@shardeum-foundation/lib-types'
+import { P2P as P2PTypes } from '@shardus/lib-types'
 
 // Mock all the dependencies
 jest.mock('../../../../src/dbstore/accounts')
@@ -39,7 +39,7 @@ jest.mock('../../../../src/Utils')
 jest.mock('../../../../src/Data/DataLogWriter')
 
 // Mock StringUtils
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   P2P: {},
   Utils: {
     safeStringify: jest.fn((obj) => JSON.stringify(obj)),

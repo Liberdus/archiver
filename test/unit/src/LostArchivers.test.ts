@@ -1,4 +1,4 @@
-import { Record } from '@shardeum-foundation/lib-types/build/src/p2p/LostArchiverTypes'
+import { Record } from '@shardus/lib-types/build/src/p2p/LostArchiverTypes'
 
 describe('LostArchivers', () => {
   let handleLostArchivers: any

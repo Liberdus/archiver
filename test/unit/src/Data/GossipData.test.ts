@@ -5,8 +5,8 @@ import * as Logger from '../../../../src/Logger'
 import * as Utils from '../../../../src/Utils'
 import { postJson } from '../../../../src/P2P'
 import { config } from '../../../../src/Config'
-import { Signature } from '@shardeum-foundation/lib-crypto-utils'
-import { P2P as P2PTypes } from '@shardeum-foundation/lib-types'
+import { Signature } from '@shardus/lib-crypto-utils'
+import { P2P as P2PTypes } from '@shardus/lib-types'
 
 // Mock the dependencies but not the module under test
 jest.mock('../../../../src/State', () => ({

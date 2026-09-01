@@ -3,7 +3,7 @@ import * as Storage from '../../../../src/archivedCycle/Storage'
 import { Database } from 'tydb'
 import * as Logger from '../../../../src/Logger'
 import { CycleChain } from '../../../../src/Data/Cycles'
-import { StateManager, P2P } from '@shardeum-foundation/lib-types'
+import { StateManager, P2P } from '@shardus/lib-types'
 import * as StateMetaData from '../../../../src/archivedCycle/StateMetaData'
 
 // Mock dependencies

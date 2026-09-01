@@ -1,6 +1,6 @@
 import { SerializeToJsonString, DeSerializeFromJsonString } from '../../../../src/utils/serialization'
 import { config } from '../../../../src/Config'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 
 // Mock Config
 jest.mock('../../../../src/Config', () => ({

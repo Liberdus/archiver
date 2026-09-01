@@ -1,4 +1,4 @@
-import { Signature } from '@shardeum-foundation/lib-crypto-utils'
+import { Signature } from '@shardus/lib-crypto-utils'
 import * as Crypto from '../Crypto'
 import * as Account from '../dbstore/accounts'
 import * as Logger from '../Logger'
@@ -7,7 +7,7 @@ import * as Utils from '../Utils'
 import { globalAccountsMap } from '../GlobalAccount'
 import * as NodeList from '../NodeList'
 import { currentNetworkMode } from './Cycles'
-import { Utils as SafeUtils } from '@shardeum-foundation/lib-types'
+import { Utils as SafeUtils } from '@shardus/lib-types'
 
 interface WrappedData {
   /** Account ID */

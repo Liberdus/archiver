@@ -22,7 +22,7 @@ jest.mock('../../../../src/Logger', () => ({
   },
 }))
 jest.mock('../../../../src/dbstore/cycles')
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   Utils: {
     safeStringify: jest.fn((obj) => JSON.stringify(obj)),
   },

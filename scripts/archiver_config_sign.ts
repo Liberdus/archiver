@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import * as fs from 'fs'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 
 interface ConfigData {
   allowedArchivers: string[]

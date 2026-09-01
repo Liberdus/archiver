@@ -1,11 +1,11 @@
 import { selectBestSuccessReceipt } from '../../../../src/checkpoint/ReceiptUtils'
 import { Receipt as ReceiptType } from '../../../../src/dbstore/receipts'
 import * as Crypto from '../../../../src/Crypto'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 
 // Mock dependencies
 jest.mock('../../../../src/Crypto')
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   Utils: {
     safeStringify: jest.fn((obj) => JSON.stringify(obj)),
   },

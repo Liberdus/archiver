@@ -1,6 +1,6 @@
 import { verifyMultiSigs, verifyTickets, VerificationConfig } from '../../../../src/services/ticketVerification'
 import { DevSecurityLevel } from '../../../../src/types/security'
-import { Utils } from '@shardeum-foundation/lib-types'
+import { Utils } from '@shardus/lib-types'
 import { ethers } from 'ethers'
 
 describe('Ticket Verification Service', () => {

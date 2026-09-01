@@ -1,6 +1,6 @@
 import { scheduleMultiSigKeysSyncFromNetConfig } from './services/transactionVerification'
 
-const _startingMessage = `@shardeum-foundation/archiver starting at
+const _startingMessage = `@liberdus/archiver starting at
   locale:  ${new Date().toLocaleString()}
   ISO/UTC: ${new Date().toISOString()}`
 console.log(_startingMessage)
@@ -33,17 +33,17 @@ import * as dbstore from './dbstore'
 import * as CycleDB from './dbstore/cycles'
 import * as ReceiptDB from './dbstore/receipts'
 import { startSaving } from './saveConsoleOutput'
-import { setupArchiverDiscovery } from '@shardeum-foundation/lib-archiver-discovery'
+import { setupArchiverDiscovery } from '@shardus/lib-archiver-discovery'
 import * as Collector from './Data/Collector'
 import { loadGlobalAccounts, syncGlobalAccount } from './GlobalAccount'
 import { setShutdownCycleRecord, cycleRecordWithShutDownMode, ArchiverCycleResponse } from './Data/Cycles'
 import { queryFromArchivers, registerRoutes } from './API'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import { healthCheckRouter } from './routes/healthCheck'
 import { initializeTickets } from './routes/tickets'
 import { initAjvSchemas } from './types/ajv/Helpers'
 import { initializeSerialization } from './utils/serialization/SchemaHelpers'
-import { allowedArchiversManager } from './shardeum/allowedArchiversManager'
+import { allowedArchiversManager } from './liberdus/allowedArchiversManager'
 import { cycleCheckpointManager } from './checkpoint/CycleData'
 import { receiptCheckpointManager } from './checkpoint/ReceiptData'
 import { originalTxCheckpointManager } from './checkpoint/OriginalTxsData'

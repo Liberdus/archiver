@@ -1,7 +1,7 @@
 import * as Crypto from '../../../src/Crypto'
 import * as State from '../../../src/State'
-import { publicKey } from '@shardeum-foundation/lib-crypto-utils'
-import { init } from '@shardeum-foundation/lib-crypto-utils'
+import { publicKey } from '@shardus/lib-crypto-utils'
+import { init } from '@shardus/lib-crypto-utils'
 
 // Mock State module
 jest.mock('../../../src/State', () => ({

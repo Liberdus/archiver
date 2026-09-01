@@ -83,7 +83,7 @@ function createMockReceipt(id: string, cycle: number): Receipt {
         isGlobal: false,
       },
     ],
-    appReceiptData: { accountId: `account-${id}`, data: {}, action: 'transfer' },
+    appReceiptData: { accountId: `account-${id}`, data: {}, action: 'transfer' } as any,
     globalModification: false,
   } as Receipt // Force type casting to Receipt to avoid TypeScript issues with missing fields used in database operations
 }

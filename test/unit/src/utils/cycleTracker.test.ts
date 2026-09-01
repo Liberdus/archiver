@@ -8,7 +8,7 @@ jest.mock('../../../../src/Logger', () => ({
     debug: jest.fn(),
   },
 }))
-jest.mock('@shardeum-foundation/lib-crypto-utils', () => ({}))
+jest.mock('@shardus/lib-crypto-utils', () => ({}))
 jest.mock('../../../../src/Utils', () => ({}))
 jest.mock('../../../../src/dbstore/sqlite3storage', () => ({}))
 jest.mock('../../../../src/dbstore/index', () => ({}))

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosProgressEvent, AxiosRequestConfig, CancelTokenSource } from 'axios'
 import { config } from '../Config'
 import fetch, { RequestInfo, RequestInit, Response } from 'node-fetch'
-import { Utils } from '@shardeum-foundation/lib-types'
+import { Utils } from '@shardus/lib-types'
 import { PassThrough } from 'stream'
 
 /**

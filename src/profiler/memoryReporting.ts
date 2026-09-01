@@ -7,7 +7,7 @@ import { getActiveNodeCount } from '../NodeList'
 import { spawn } from 'child_process'
 import * as process from 'process'
 import { isDebugMiddleware } from '../DebugMode'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 
 type CounterMap = Map<string, CounterNode>
 interface CounterNode {

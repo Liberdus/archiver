@@ -1,6 +1,6 @@
 // @ts-nocheck - Type definitions are complex and would require extensive mocking
 import { expect, describe, it, beforeEach, jest } from '@jest/globals'
-import { P2P } from '@shardeum-foundation/lib-types'
+import { P2P } from '@shardus/lib-types'
 import {
   verifyValidatorList,
   verifyStandbyList,
@@ -10,7 +10,7 @@ import {
 } from '../../../../src/sync-v2/verify'
 
 // Mock the crypto utils module
-jest.mock('@shardeum-foundation/lib-crypto-utils', () => ({
+jest.mock('@shardus/lib-crypto-utils', () => ({
   hashObj: jest.fn((obj: any) => {
     // Simple mock hash function that creates a deterministic hash from object
     try {
@@ -29,7 +29,7 @@ jest.mock('../../../../src/Data/Cycles', () => ({
 }))
 
 // Import after mocks
-import { hashObj } from '@shardeum-foundation/lib-crypto-utils'
+import { hashObj } from '@shardus/lib-crypto-utils'
 import { computeCycleMarker } from '../../../../src/Data/Cycles'
 
 describe('sync-v2/verify', () => {

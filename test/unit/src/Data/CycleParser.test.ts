@@ -12,7 +12,7 @@ import {
   totalNodeCount,
 } from '../../../../src/Data/CycleParser'
 import * as NodeList from '../../../../src/NodeList'
-import { P2P } from '@shardeum-foundation/lib-types'
+import { P2P } from '@shardus/lib-types'
 
 // Mock dependencies
 jest.mock('../../../../src/NodeList')

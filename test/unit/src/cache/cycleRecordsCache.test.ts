@@ -3,7 +3,7 @@ import {
   addCyclesToCache,
   getLatestCycleRecordsFromCache,
 } from '../../../../src/cache/cycleRecordsCache'
-import { P2P } from '@shardeum-foundation/lib-types'
+import { P2P } from '@shardus/lib-types'
 import { queryLatestCycleRecords } from '../../../../src/dbstore/cycles'
 import * as Crypto from '../../../../src/Crypto'
 import { ArchiverCycleResponse } from '../../../../src/Data/Cycles'

@@ -1,4 +1,4 @@
-import { P2P as P2PTypes } from '@shardeum-foundation/lib-types'
+import { P2P as P2PTypes } from '@shardus/lib-types'
 
 // Global mocks that need to be in place before any module loading
 jest.mock('../../../../src/Config', () => ({

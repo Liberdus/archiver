@@ -2,9 +2,9 @@ import * as Utils from '../../../src/Utils'
 import { DevSecurityLevel } from '../../../src/types/security'
 import { Sign } from '../../../src/types/internalTxType'
 import { Wallet } from 'ethers'
-import { safeStringify } from '@shardeum-foundation/lib-types/build/src/utils/functions/stringify'
+import { safeStringify } from '@shardus/lib-types/build/src/utils/functions/stringify'
 import * as fs from 'fs'
-import * as crypto from '@shardeum-foundation/lib-crypto-utils'
+import * as crypto from '@shardus/lib-crypto-utils'
 
 // Mock Logger.mainLogger to avoid errors
 jest.mock('../../../src/Logger', () => ({

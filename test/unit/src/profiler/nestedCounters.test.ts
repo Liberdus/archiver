@@ -6,7 +6,7 @@ import NestedCounters, {
 } from '../../../../src/profiler/nestedCounters'
 import { isDebugMiddleware } from '../../../../src/DebugMode'
 import { stringifyReduce } from '../../../../src/profiler/StringifyReduce'
-import * as core from '@shardeum-foundation/lib-crypto-utils'
+import * as core from '@shardus/lib-crypto-utils'
 
 /**
  * NOTE ON TESTING THE INFINITE LOOP:
@@ -29,7 +29,7 @@ jest.mock('../../../../src/profiler/StringifyReduce', () => ({
   stringifyReduce: jest.fn().mockImplementation(() => 'mock-stringified-data'),
 }))
 
-jest.mock('@shardeum-foundation/lib-crypto-utils', () => ({
+jest.mock('@shardus/lib-crypto-utils', () => ({
   hash: jest.fn().mockImplementation(() => 'mock-hash-result'),
 }))
 

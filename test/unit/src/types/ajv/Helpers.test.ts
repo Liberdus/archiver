@@ -15,7 +15,7 @@ jest.mock('../../../../../src/types/ajv/OriginalTxData', () => ({
   initOriginalTxData: jest.fn(),
 }))
 
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   Utils: {
     safeStringify: jest.fn((obj) => JSON.stringify(obj)),
   },
@@ -331,7 +331,7 @@ describe('ajv/Helpers', () => {
       ]
 
       // Mock safeStringify to handle circular refs
-      const { Utils } = require('@shardeum-foundation/lib-types')
+      const { Utils } = require('@shardus/lib-types')
       Utils.safeStringify.mockImplementationOnce(() => '{"a":1,"circular":"[Circular]"}')
 
       mockVerifyFn.mockReturnValue(false)

@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import { join } from 'path'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
-import * as crypto from '@shardeum-foundation/lib-crypto-utils'
+import { Utils as StringUtils } from '@shardus/lib-types'
+import * as crypto from '@shardus/lib-crypto-utils'
 import { config, overrideDefaultConfig } from '../src/Config'
 
 /**

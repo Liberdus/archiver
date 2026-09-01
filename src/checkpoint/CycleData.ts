@@ -10,7 +10,7 @@ import {
   CheckpointType,
 } from './CheckpointData'
 import * as Crypto from '../Crypto'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import * as Logger from '../Logger'
 import { insertCycle } from '../dbstore/cycles'
 

@@ -15,7 +15,7 @@ import * as Crypto from '../src/Crypto'
 import { join } from 'path'
 import * as Logger from '../src/Logger'
 import { startSaving } from '../src/saveConsoleOutput'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import { initAjvSchemas } from '../src/types/ajv/Helpers'
 import { initializeSerialization } from '../src/utils/serialization/SchemaHelpers'
 

@@ -1,6 +1,37 @@
-import { P2P } from '@shardeum-foundation/lib-types'
+import { P2P } from '@shardus/lib-types'
 import { ArchiverReceipt, Receipt, queryInitNetworkReceiptCountBetweenCycles } from '../dbstore/receipts'
 import { calculateAccountHash } from './calculateAccountHash'
+
+
+
+export interface SetGlobalTxValue {
+  isInternalTx: boolean
+  internalTXType: InternalTXType
+  timestamp: number
+  from: string
+  change: {
+    cycle: number
+    change: object
+  }
+}
+
+// Refer to https://github.com/shardeum/shardeum/blob/89db23e1d4ffb86b4353b8f37fb360ea3cd93c5b/src/shardeum/shardeumTypes.ts#L87-L88
+export enum InternalTXType {
+  SetGlobalCodeBytes = 0, //Deprecated
+  InitNetwork = 1,
+  NodeReward = 2, //Deprecated
+  ChangeConfig = 3,
+  ApplyChangeConfig = 4,
+  SetCertTime = 5,
+  Stake = 6,
+  Unstake = 7,
+  InitRewardTimes = 8,
+  ClaimReward = 9,
+  ChangeNetworkParam = 10,
+  ApplyNetworkParam = 11,
+  Penalty = 12,
+  TransferFromSecureAccount = 13,
+}
 
 /**
  * Verifies the account hash in a global transaction receipt

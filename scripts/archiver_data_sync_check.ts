@@ -1,10 +1,10 @@
-import * as crypto from '@shardeum-foundation/lib-crypto-utils'
+import * as crypto from '@shardus/lib-crypto-utils'
 import { writeFileSync } from 'fs'
 import { join } from 'path'
 import { postJson } from '../src/P2P'
 import { config, overrideDefaultConfig } from '../src/Config'
 import { ArchiverNodeInfo } from '../src/State'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import { initAjvSchemas } from '../src/types/ajv/Helpers'
 import { initializeSerialization } from '../src/utils/serialization/SchemaHelpers'
 

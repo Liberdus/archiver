@@ -3,10 +3,10 @@ import {
   verifyGlobalTxAccountChange,
   InternalTXType,
   SetGlobalTxValue,
-} from '../../../../src/shardeum/verifyGlobalTxReceipt'
-import { accountSpecificHash } from '../../../../src/shardeum/calculateAccountHash'
+} from '../../../../src/liberdus/verifyGlobalTxReceipt'
+import { accountSpecificHash } from '../../../../src/liberdus/calculateAccountHash'
 import { ArchiverReceipt, queryInitNetworkReceiptCountBetweenCycles } from '../../../../src/dbstore/receipts'
-import { GlobalTxReceipt } from '@shardeum-foundation/lib-types/build/src/p2p/GlobalAccountsTypes'
+import { GlobalTxReceipt } from '@shardus/lib-types/build/src/p2p/GlobalAccountsTypes'
 
 // Mock the queryInitNetworkReceiptCountBetweenCycles function
 jest.mock('../../../../src/dbstore/receipts', () => ({
@@ -14,7 +14,7 @@ jest.mock('../../../../src/dbstore/receipts', () => ({
 }))
 
 // Mock the accountSpecificHash function
-jest.mock('../../../../src/shardeum/calculateAccountHash', () => ({
+jest.mock('../../../../src/liberdus/calculateAccountHash', () => ({
   accountSpecificHash: jest.fn(),
 }))
 

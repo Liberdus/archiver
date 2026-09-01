@@ -8,7 +8,7 @@ import * as Utils from '../../../../src/Utils'
 import { globalAccountsMap } from '../../../../src/GlobalAccount'
 import * as NodeList from '../../../../src/NodeList'
 import { currentNetworkMode } from '../../../../src/Data/Cycles'
-import { Signature } from '@shardeum-foundation/lib-crypto-utils'
+import { Signature } from '@shardus/lib-crypto-utils'
 
 // Mock dependencies
 jest.mock('../../../../src/Crypto', () => ({

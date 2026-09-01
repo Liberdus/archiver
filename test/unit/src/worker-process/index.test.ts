@@ -9,7 +9,7 @@ jest.mock('../../../../src/Config', () => ({
     lastActivityCheckInterval: 10000,
   },
 }))
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   Utils: {
     safeJsonParse: jest.fn((str) => JSON.parse(str)),
   },
@@ -24,7 +24,7 @@ jest.mock('../../../../src/dbstore/receipts', () => ({
 import { initWorkerProcess } from '../../../../src/worker-process/index'
 import * as Collector from '../../../../src/Data/Collector'
 import { config } from '../../../../src/Config'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 
 describe('worker-process/index', () => {
   let mockProcessSend: jest.Mock
@@ -331,7 +331,7 @@ describe('worker-process/index', () => {
           lastActivityCheckInterval: 10000,
         },
       }))
-      jest.doMock('@shardeum-foundation/lib-types', () => ({
+      jest.doMock('@shardus/lib-types', () => ({
         Utils: {
           safeJsonParse: jest.fn((str) => JSON.parse(str)),
         },
@@ -372,7 +372,7 @@ describe('worker-process/index', () => {
           lastActivityCheckInterval: 10000,
         },
       }))
-      jest.doMock('@shardeum-foundation/lib-types', () => ({
+      jest.doMock('@shardus/lib-types', () => ({
         Utils: {
           safeJsonParse: jest.fn((str) => JSON.parse(str)),
         },

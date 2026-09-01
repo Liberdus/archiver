@@ -2,13 +2,13 @@ import * as CycleDB from './dbstore/cycles'
 import * as Cycles from './Data/Cycles'
 import * as Logger from './Logger'
 import * as NodeList from './NodeList'
-import { ArchiverRefutesLostMsg, Record } from '@shardeum-foundation/lib-types/build/src/p2p/LostArchiverTypes'
+import { ArchiverRefutesLostMsg, Record } from '@shardus/lib-types/build/src/p2p/LostArchiverTypes'
 import { config } from './Config'
 import { calcIncomingTimes } from './Data/Data'
 import { postJson } from './P2P'
 import { sign } from './Crypto'
-import { SignedObject } from '@shardeum-foundation/lib-types/build/src/p2p/P2PTypes'
-import { allowedArchiversManager } from './shardeum/allowedArchiversManager'
+import { SignedObject } from '@shardus/lib-types/build/src/p2p/P2PTypes'
+import { allowedArchiversManager } from './liberdus/allowedArchiversManager'
 
 let shouldSendRefutes = false
 

@@ -237,3 +237,21 @@ export async function queryTransactionsBetweenCycles(
   }
   return transactions
 }
+
+export async function queryTransactionByAccountId(accountId: string): Promise<Transaction> {
+  try {
+    const sql = `SELECT * FROM transactions WHERE accountId=?`
+    const transaction = (await db.get(transactionDatabase, sql, [accountId])) as DbTransaction // TODO: confirm structure of object from db
+    if (transaction) {
+      if (transaction.data) transaction.data = DeSerializeFromJsonString(transaction.data)
+      if (transaction.originalTxData) transaction.originalTxData = DeSerializeFromJsonString(transaction.originalTxData)
+    }
+    if (config.VERBOSE) {
+      Logger.mainLogger.debug('Transaction accountId', transaction)
+    }
+    return transaction
+  } catch (e) {
+    Logger.mainLogger.error(e)
+    return null
+  }
+}

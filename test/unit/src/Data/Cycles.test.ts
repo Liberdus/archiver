@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, jest } from '@jest/globals'
-import { P2P as P2PTypes, StateManager } from '@shardeum-foundation/lib-types'
+import { P2P as P2PTypes, StateManager } from '@shardus/lib-types'
 import * as Cycles from '../../../../src/Data/Cycles'
 import * as NodeList from '../../../../src/NodeList'
 import * as State from '../../../../src/State'

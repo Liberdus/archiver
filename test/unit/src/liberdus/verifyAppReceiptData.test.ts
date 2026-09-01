@@ -1,8 +1,8 @@
 import * as crypto from '../../../../src/Crypto'
-import { verifyAppReceiptData, ShardeumReceipt } from '../../../../src/shardeum/verifyAppReceiptData'
+import { verifyAppReceiptData, ShardeumReceipt } from '../../../../src/liberdus/verifyAppReceiptData'
 import { verifyPayload } from '../../../../src/types/ajv/Helpers'
 import { AJVSchemaEnum } from '../../../../src/types/enum/AJVSchemaEnum'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import { ArchiverReceipt, Receipt, SignedReceipt } from '../../../../src/dbstore/receipts'
 
 // Mock dependencies
@@ -15,7 +15,7 @@ jest.mock('../../../../src/types/ajv/Helpers', () => ({
   verifyPayload: jest.fn().mockImplementation(() => null), // Return null for no errors by default
 }))
 
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   Utils: {
     safeStringify: jest.fn((obj) => JSON.stringify(obj)),
   },
@@ -78,7 +78,7 @@ describe('verifyAppReceiptData', () => {
         } as ShardeumReceipt,
       },
       globalModification: false,
-    }
+    } as any
 
     // Reset test tracking arrays
     failedReasons = []
@@ -125,7 +125,7 @@ describe('verifyAppReceiptData', () => {
         data: {
           readableReceipt: { status: 0 },
         } as ShardeumReceipt,
-      }
+      } as any
 
       const result = await verifyAppReceiptData(
         receipt as ArchiverReceipt,
@@ -143,7 +143,7 @@ describe('verifyAppReceiptData', () => {
         data: {
           amountSpent: '0x0',
         } as ShardeumReceipt,
-      }
+      } as any
 
       const result = await verifyAppReceiptData(
         receipt as ArchiverReceipt,
@@ -241,7 +241,7 @@ describe('verifyAppReceiptData', () => {
               status: 0,
             },
           } as ShardeumReceipt,
-        },
+        }  as any,
         receiptId: 'receipt-id',
         timestamp: 123456000,
         applyTimestamp: 123456000,
@@ -398,7 +398,7 @@ describe('verifyAppReceiptData', () => {
             bitvector: { 0: 1, 1: 0, 2: 1 }, // Object that needs conversion
           },
         } as ShardeumReceipt,
-      }
+      } as any
 
       const result = await verifyAppReceiptData(receipt as ArchiverReceipt)
 
@@ -422,7 +422,7 @@ describe('verifyAppReceiptData', () => {
             ],
           },
         } as ShardeumReceipt,
-      }
+      }  as any
 
       const result = await verifyAppReceiptData(receipt as ArchiverReceipt)
 
@@ -448,7 +448,7 @@ describe('verifyAppReceiptData', () => {
             bitvector: { 0: 1, 1: 0, 2: 1 },
           },
         } as ShardeumReceipt,
-      }
+      } as any
 
       const result = await verifyAppReceiptData(
         receipt as ArchiverReceipt,
@@ -632,7 +632,7 @@ describe('verifyAppReceiptData', () => {
               status: 0,
             },
           } as ShardeumReceipt,
-        },
+        } as any,
         receiptId: 'receipt-id',
         timestamp: 123456000,
         applyTimestamp: 123456000,
@@ -696,7 +696,7 @@ describe('verifyAppReceiptData', () => {
             readableReceipt: { status: 0 },
             receipt: { logs: [] },
           } as ShardeumReceipt,
-        }
+        } as any
 
         const result = await verifyAppReceiptData(receipt as ArchiverReceipt)
         expect(result.valid).toBe(true)
@@ -709,7 +709,7 @@ describe('verifyAppReceiptData', () => {
           amountSpent: '',
           readableReceipt: { status: 0 },
         } as ShardeumReceipt,
-      }
+      } as any
 
       const result = await verifyAppReceiptData(
         receipt as ArchiverReceipt,
@@ -738,7 +738,7 @@ describe('verifyAppReceiptData', () => {
             readableReceipt: { status },
             receipt: { logs: [] },
           } as ShardeumReceipt,
-        }
+        } as any
 
         const result = await verifyAppReceiptData(receipt as ArchiverReceipt)
         expect(result.valid).toBe(true)
@@ -751,7 +751,7 @@ describe('verifyAppReceiptData', () => {
           amountSpent: '0x0',
           readableReceipt: {} as any, // Missing status property
         } as ShardeumReceipt,
-      }
+      } as any
 
       const result = await verifyAppReceiptData(
         receipt as ArchiverReceipt,
@@ -808,7 +808,7 @@ describe('verifyAppReceiptData', () => {
             logs: deepLogs,
           },
         } as ShardeumReceipt,
-      }
+      } as any
 
       const result = await verifyAppReceiptData(receipt as ArchiverReceipt)
 
@@ -845,7 +845,7 @@ describe('verifyAppReceiptData', () => {
           readableReceipt: { status: 0 },
           // No receipt property
         } as ShardeumReceipt,
-      }
+      } as any
 
       const result = await verifyAppReceiptData(receipt as ArchiverReceipt)
 
@@ -872,7 +872,7 @@ describe('verifyAppReceiptData', () => {
               status: 0,
             },
           } as ShardeumReceipt,
-        },
+        } as any,
         receiptId: 'receipt-id',
         timestamp: 123456000,
         applyTimestamp: 123456000,

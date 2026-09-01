@@ -20,7 +20,7 @@ jest.mock('../../../../src/Data/Collector', () => ({
   ReceiptVerificationResult: {},
 }))
 
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   StateManager: {
     shardFunctionTypes: {},
   },

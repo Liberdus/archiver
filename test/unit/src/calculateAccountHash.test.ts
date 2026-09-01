@@ -5,11 +5,11 @@ import {
   accountSpecificHash,
   verifyAccountHash,
   verifyNonGlobalTxAccountChange,
-} from '../../../src/shardeum/calculateAccountHash'
+} from '../../../src/liberdus/calculateAccountHash'
 import { ArchiverReceipt, Receipt, SignedReceipt } from '../../../src/dbstore/receipts'
 import { AccountsCopy } from '../../../src/dbstore/accounts'
 import * as helpers from '../../../src/types/ajv/Helpers'
-import * as verifyGlobalTxReceiptModule from '../../../src/shardeum/verifyGlobalTxReceipt'
+import * as verifyGlobalTxReceiptModule from '../../../src/liberdus/verifyGlobalTxReceipt'
 
 // Only mock dependencies, never the functions under test
 jest.mock('../../../src/types/ajv/Helpers', () => ({
@@ -253,7 +253,7 @@ describe('calculateAccountHash', () => {
           },
         ],
         beforeStates: [],
-        appReceiptData: { data: {} },
+        appReceiptData: { data: {} }  as any,
         globalModification: false,
       }
 
@@ -482,7 +482,7 @@ describe('calculateAccountHash', () => {
           },
         ] as AccountsCopy[],
         beforeStates: [],
-        appReceiptData: { data: {} },
+        appReceiptData: { data: {} }as any,
         globalModification: false,
       }
 

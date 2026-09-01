@@ -3,7 +3,7 @@ import * as db from '../../../../src/dbstore/sqlite3storage'
 import { cycleDatabase } from '../../../../src/dbstore'
 import { CheckpointStatusType } from '../../../../src/dbstore/checkpointStatus'
 import { Cycle, DbCycle } from '../../../../src/dbstore/types'
-import { P2P } from '@shardeum-foundation/lib-types'
+import { P2P } from '@shardus/lib-types'
 
 // Mock all dependencies first before importing the module under test
 jest.mock('../../../../src/dbstore/sqlite3storage')

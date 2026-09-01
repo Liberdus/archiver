@@ -4,8 +4,8 @@
  */
 
 import { okAsync, errAsync, ResultAsync } from 'neverthrow'
-import { hexstring, P2P as P2PTypes } from '@shardeum-foundation/lib-types'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { hexstring, P2P as P2PTypes } from '@shardus/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import {
   getCurrentCycleDataFromNode,
   robustQueryForCycleRecordHash,
@@ -26,7 +26,7 @@ import * as Logger from '../Logger'
 import * as ServiceQueue from '../ServiceQueue'
 import { ArchiverLogging } from '../profiler/archiverLogging'
 import { config } from '../Config'
-import { safeStringify } from '@shardeum-foundation/lib-types/build/src/utils/functions/stringify'
+import { safeStringify } from '@shardus/lib-types/build/src/utils/functions/stringify'
 
 /**
  * Given a list of archivers, queries each one until one returns an active node list.

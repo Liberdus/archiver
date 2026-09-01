@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { makeShortHash, stringifyReduce, StringifyVal } from '../../../../src/profiler/StringifyReduce'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 
 // Mock the StringUtils.safeStringify function
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   Utils: {
     safeStringify: jest.fn((val) => JSON.stringify(val)),
   },

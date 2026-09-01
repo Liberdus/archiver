@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach, afterEach, jest } from '@jest/globals'
-import { P2P } from '@shardeum-foundation/lib-types'
+import { P2P } from '@shardus/lib-types'
 import { ok, err } from 'neverthrow'
 import * as Utils from '../../../../src/Utils'
 import * as P2PModule from '../../../../src/P2P'

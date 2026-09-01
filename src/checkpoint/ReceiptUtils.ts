@@ -1,5 +1,5 @@
 import * as Crypto from '../Crypto'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import { Receipt as ReceiptType } from '../dbstore/receipts'
 
 /**

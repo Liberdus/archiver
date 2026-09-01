@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach, afterEach, jest } from '@jest/globals'
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
-import { Signature } from '@shardeum-foundation/lib-crypto-utils'
+import { Signature } from '@shardus/lib-crypto-utils'
 
 // Mock all dependencies before importing the module
 jest.mock('../../../src/Config', () => ({
@@ -215,7 +215,7 @@ import * as Utils from '../../../src/Utils'
 import * as P2P from '../../../src/P2P'
 import { config } from '../../../src/Config'
 import * as Cycles from '../../../src/Data/Cycles'
-import { allowedArchiversManager } from '../../../src/shardeum/allowedArchiversManager'
+import { allowedArchiversManager } from '../../../src/liberdus/allowedArchiversManager'
 import { getGlobalNetworkAccount } from '../../../src/GlobalAccount'
 import * as Data from '../../../src/Data/Data'
 import { isBucketVerified } from '../../../src/dbstore/checkpointStatus'

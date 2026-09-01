@@ -8,7 +8,7 @@ interface ReceiptResponse {
 }
 
 // Create mocks for all dependencies before importing the script
-jest.mock('@shardeum-foundation/lib-crypto-utils', () => ({
+jest.mock('@shardus/lib-crypto-utils', () => ({
   init: jest.fn(),
   signObj: jest.fn(),
 }))
@@ -42,17 +42,17 @@ jest.mock('../../../src/utils/serialization/SchemaHelpers', () => ({
   initializeSerialization: jest.fn(),
 }))
 
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   Utils: {
     safeStringify: jest.fn().mockImplementation(JSON.stringify),
   },
 }))
 
 // Import the mocked dependencies
-import * as crypto from '@shardeum-foundation/lib-crypto-utils'
+import * as crypto from '@shardus/lib-crypto-utils'
 import { postJson } from '../../../src/P2P'
 import { config, overrideDefaultConfig } from '../../../src/Config'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import { initAjvSchemas } from '../../../src/types/ajv/Helpers'
 import { initializeSerialization } from '../../../src/utils/serialization/SchemaHelpers'
 

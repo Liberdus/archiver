@@ -1,5 +1,5 @@
 import { Cycle, DbCycle } from '../../../../src/dbstore/types'
-import { P2P, StateManager } from '@shardeum-foundation/lib-types'
+import { P2P, StateManager } from '@shardus/lib-types'
 
 describe('dbstore types', () => {
   // Helper function to create a mock CycleData

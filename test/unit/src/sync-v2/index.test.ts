@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach, jest } from '@jest/globals'
 import { okAsync, errAsync, ResultAsync, ok, err } from 'neverthrow'
-import { P2P as P2PTypes } from '@shardeum-foundation/lib-types'
+import { P2P as P2PTypes } from '@shardus/lib-types'
 import { syncV2, syncTxList } from '../../../../src/sync-v2/index'
 import * as queries from '../../../../src/sync-v2/queries'
 import * as verify from '../../../../src/sync-v2/verify'

@@ -3,7 +3,7 @@ import * as Crypto from '../../../../src/Crypto'
 import * as Logger from '../../../../src/Logger'
 import { insertReceipt } from '../../../../src/dbstore/receipts'
 import { CheckpointType } from '../../../../src/checkpoint/CheckpointData'
-import { verifyAppReceiptData } from '../../../../src/shardeum/verifyAppReceiptData'
+import { verifyAppReceiptData } from '../../../../src/liberdus/verifyAppReceiptData'
 import {
   ReceiptCheckpointData,
   calculateBucketID,
@@ -24,7 +24,7 @@ jest.mock('../../../../src/Logger', () => ({
 }))
 jest.mock('../../../../src/dbstore/receipts')
 jest.mock('../../../../src/shardeum/verifyAppReceiptData')
-jest.mock('@shardeum-foundation/lib-types', () => ({
+jest.mock('@shardus/lib-types', () => ({
   Utils: {
     safeStringify: jest.fn((obj) => JSON.stringify(obj)),
   },

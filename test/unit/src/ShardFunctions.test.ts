@@ -1,6 +1,6 @@
 // @ts-nocheck
 import ShardFunctions from '../../../src/ShardFunctions'
-import { StateManager, P2P } from '@shardeum-foundation/lib-types'
+import { StateManager, P2P } from '@shardus/lib-types'
 import Logger from '../../../src/Logger'
 import * as log4js from 'log4js'
 // Import Jest types explicitly

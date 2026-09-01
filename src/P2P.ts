@@ -2,10 +2,10 @@ import * as State from './State'
 import * as Crypto from './Crypto'
 import * as Data from './Data/Data'
 import * as NodeList from './NodeList'
-import { P2P as P2PTypes } from '@shardeum-foundation/lib-types'
+import { P2P as P2PTypes } from '@shardus/lib-types'
 import { RequestInit, Response } from 'node-fetch'
-import { SignedObject } from '@shardeum-foundation/lib-crypto-utils'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { SignedObject } from '@shardus/lib-crypto-utils'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import { customFetch } from './utils/customHttpFunctions'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json')

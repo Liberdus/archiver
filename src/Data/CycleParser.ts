@@ -1,5 +1,5 @@
 import * as NodeList from '../NodeList'
-import { P2P } from '@shardeum-foundation/lib-types'
+import { P2P } from '@shardus/lib-types'
 
 export enum NodeStatus {
   ACTIVE = 'active',

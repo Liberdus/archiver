@@ -1,6 +1,6 @@
 import { selectBestSuccessReceipt } from '../../../../src/checkpoint/ReceiptUtils'
 import * as Crypto from '../../../../src/Crypto'
-import { Utils as StringUtils } from '@shardeum-foundation/lib-types'
+import { Utils as StringUtils } from '@shardus/lib-types'
 import { Receipt as ReceiptType, SignedReceipt } from '../../../../src/dbstore/receipts'
 import { describe, it, expect, beforeEach } from '@jest/globals'
 

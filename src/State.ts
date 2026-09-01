@@ -11,7 +11,7 @@ import { publicKey, secretKey, curvePublicKey, curveSecretKey } from '@shardus/l
 import fetch from 'node-fetch'
 import { getAdjacentLeftAndRightArchivers } from './Data/GossipData'
 import { closeDatabase } from './dbstore'
-import { allowedArchiversManager } from './liberdus/allowedArchiversManager'
+import { allowedArchiversManager } from './app/allowedArchiversManager'
 import { customFetch } from './utils/customHttpFunctions'
 import { Utils as StringUtils } from '@shardus/lib-types'
 import { updateCycleTrackerOnShutdown } from './utils/cycleTracker'

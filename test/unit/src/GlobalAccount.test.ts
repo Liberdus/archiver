@@ -3,8 +3,8 @@ import * as Crypto from '../../../src/Crypto'
 import * as AccountDB from '../../../src/dbstore/accounts'
 import * as State from '../../../src/State'
 import * as Utils from '../../../src/Utils'
-import * as calculateAccountHash from '../../../src/liberdus/calculateAccountHash'
-import { allowedArchiversManager } from '../../../src/liberdus/allowedArchiversManager'
+import * as calculateAccountHash from '../../../src/app/calculateAccountHash'
+import { allowedArchiversManager } from '../../../src/app/allowedArchiversManager'
 
 // Mock dependencies before importing the module under test
 jest.mock('rfdc', () => jest.fn(() => jest.fn((obj) => JSON.parse(JSON.stringify(obj)))))

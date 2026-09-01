@@ -7,8 +7,8 @@ import { config } from './Config'
 import { postJson, getJson } from './P2P'
 import { robustQuery, deepCopy } from './Utils'
 import { isDeepStrictEqual } from 'util'
-import { calculateAccountHash } from './liberdus/calculateAccountHash'
-import { allowedArchiversManager } from './liberdus/allowedArchiversManager'
+import { calculateAccountHash } from './app/calculateAccountHash'
+import { allowedArchiversManager } from './app/allowedArchiversManager'
 
 let cachedGlobalNetworkAccount: AccountDB.AccountsCopy
 let cachedGlobalNetworkAccountHash: string

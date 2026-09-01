@@ -5,11 +5,11 @@ import {
   accountSpecificHash,
   verifyAccountHash,
   verifyNonGlobalTxAccountChange,
-} from '../../../src/liberdus/calculateAccountHash'
+} from '../../../src/app/calculateAccountHash'
 import { ArchiverReceipt, Receipt, SignedReceipt } from '../../../src/dbstore/receipts'
 import { AccountsCopy } from '../../../src/dbstore/accounts'
 import * as helpers from '../../../src/types/ajv/Helpers'
-import * as verifyGlobalTxReceiptModule from '../../../src/liberdus/verifyGlobalTxReceipt'
+import * as verifyGlobalTxReceiptModule from '../../../src/app/verifyGlobalTxReceipt'
 
 // Only mock dependencies, never the functions under test
 jest.mock('../../../src/types/ajv/Helpers', () => ({

@@ -51,11 +51,11 @@ jest.mock('../../../src/Utils', () => ({
   deepCopy: jest.fn((obj) => JSON.parse(JSON.stringify(obj))),
 }))
 
-jest.mock('../../../src/shardeum/calculateAccountHash', () => ({
+jest.mock('../../../src/app/calculateAccountHash', () => ({
   accountSpecificHash: jest.fn(),
 }))
 
-jest.mock('../../../src/shardeum/allowedArchiversManager', () => ({
+jest.mock('../../../src/app/allowedArchiversManager', () => ({
   allowedArchiversManager: {
     setGlobalAccountConfig: jest.fn(),
   },

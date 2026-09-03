@@ -124,7 +124,7 @@ jest.mock('../../../src/dbstore/transactions', () => ({
   queryTransactionCountBetweenCycles: jest.fn(() => 0),
   queryTransactionsBetweenCycles: jest.fn(() => []),
   queryTransactionByTxId: jest.fn(() => null),
-  queryTransactionByAccountId: jest.fn(() => null),
+  queryTransactionByAppReceiptId: jest.fn(() => null),
   queryTransactionCount: jest.fn(() => 0),
 }))
 jest.mock('../../../src/dbstore/receipts', () => ({
@@ -164,7 +164,7 @@ jest.mock('../../../src/ServiceQueue', () => ({
 jest.mock('../../../src/routes/tickets', () => ({
   default: jest.fn((fastify: any, opts: any, done: any) => done()),
 }))
-jest.mock('../../../src/shardeum/allowedArchiversManager', () => ({
+jest.mock('../../../src/app/allowedArchiversManager', () => ({
   allowedArchiversManager: {
     getCurrentConfig: jest.fn(() => ({ allowedArchivers: [] })),
     isArchiverAllowed: jest.fn(() => true),
@@ -1755,7 +1755,7 @@ describe('API', () => {
 
     it('should query transaction by appReceiptId', async () => {
       const mockTransactions = [{ txId: 'tx1', appReceiptId: 'receipt1' }]
-      ;(TransactionDB.queryTransactionByAccountId as jest.Mock<any>).mockResolvedValue(mockTransactions)
+      ;(TransactionDB.queryTransactionByAppReceiptId as jest.Mock<any>).mockResolvedValue(mockTransactions)
 
       const requestData = {
         appReceiptId: 'receipt1',
@@ -1765,7 +1765,7 @@ describe('API', () => {
 
       await handler({ ...mockRequest, body: requestData }, mockReply)
 
-      expect(TransactionDB.queryTransactionByAccountId).toHaveBeenCalledWith('receipt1')
+      expect(TransactionDB.queryTransactionByAppReceiptId).toHaveBeenCalledWith('receipt1')
       expect(mockReply.send).toHaveBeenCalledWith(
         expect.objectContaining({
           transactions: mockTransactions,

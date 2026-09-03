@@ -69,7 +69,7 @@ describe('LostArchivers', () => {
       sign: jest.fn(),
     }))
 
-    jest.doMock('../../../src/shardeum/allowedArchiversManager', () => ({
+    jest.doMock('../../../src/app/allowedArchiversManager', () => ({
       allowedArchiversManager: {
         stopWatching: jest.fn(),
       },
@@ -77,7 +77,7 @@ describe('LostArchivers', () => {
 
     // Import mocked modules
     Logger = require('../../../src/Logger')
-    const AllowedArchiversModule = require('../../../src/shardeum/allowedArchiversManager')
+    const AllowedArchiversModule = require('../../../src/app/allowedArchiversManager')
     allowedArchiversManager = AllowedArchiversModule.allowedArchiversManager
 
     // Import the module under test

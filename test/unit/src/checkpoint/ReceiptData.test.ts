@@ -23,7 +23,7 @@ jest.mock('../../../../src/Logger', () => ({
   },
 }))
 jest.mock('../../../../src/dbstore/receipts')
-jest.mock('../../../../src/shardeum/verifyAppReceiptData')
+jest.mock('../../../../src/app/verifyAppReceiptData')
 jest.mock('@shardus/lib-types', () => ({
   Utils: {
     safeStringify: jest.fn((obj) => JSON.stringify(obj)),

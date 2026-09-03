@@ -6,7 +6,7 @@ import {
   insertTransaction,
   bulkInsertTransactions,
   queryTransactionByTxId,
-  queryTransactionByAccountId,
+  queryTransactionByAppReceiptId,
   queryLatestTransactions,
   queryTransactions,
   queryTransactionCount,
@@ -703,17 +703,17 @@ describe('Transactions Database Operations', () => {
     })
   })
 
-  describe('queryTransactionByAccountId', () => {
-    it('should successfully return a transaction by accountId', async () => {
+  describe('queryTransactionByAppReceiptId', () => {
+    it('should successfully return a transaction by receiptId', async () => {
       // Setup: mock successful db get with transaction
       jest.mocked(db.get).mockResolvedValueOnce(sampleDbTransaction)
 
       // Execute
-      const result = await queryTransactionByAccountId('test-account-id')
+      const result = await queryTransactionByAppReceiptId('test-receipt-id')
 
       // Verify correct SQL and parameters
-      expect(db.get).toHaveBeenCalledWith('mock-transaction-db', 'SELECT * FROM transactions WHERE accountId=?', [
-        'test-account-id',
+      expect(db.get).toHaveBeenCalledWith('mock-transaction-db', 'SELECT * FROM transactions WHERE appReceiptId=?', [
+        'test-receipt-id',
       ])
 
       // Verify deserialization
@@ -735,10 +735,10 @@ describe('Transactions Database Operations', () => {
       jest.mocked(db.get).mockResolvedValueOnce(sampleDbTransaction)
 
       // Execute
-      await queryTransactionByAccountId('test-account-id')
+      await queryTransactionByAppReceiptId('test-receipt-id')
 
       // Verify debug was called
-      expect(Logger.mainLogger.debug).toHaveBeenCalledWith('Transaction accountId', expect.anything())
+      expect(Logger.mainLogger.debug).toHaveBeenCalledWith('Transaction appReceiptId', expect.anything())
     })
 
     it('should return null when account transaction is not found', async () => {
@@ -746,7 +746,7 @@ describe('Transactions Database Operations', () => {
       jest.mocked(db.get).mockResolvedValueOnce(null)
 
       // Execute
-      const result = await queryTransactionByAccountId('non-existent-id')
+      const result = await queryTransactionByAppReceiptId('non-existent-id')
 
       // Verify correct result
       expect(result).toBeNull()
@@ -759,7 +759,7 @@ describe('Transactions Database Operations', () => {
       jest.mocked(db.get).mockRejectedValueOnce(dbError)
 
       // Execute
-      const result = await queryTransactionByAccountId('test-account-id')
+      const result = await queryTransactionByAppReceiptId('test-receipt-id')
 
       // Verify error handling
       expect(Logger.mainLogger.error).toHaveBeenCalledWith(dbError)
@@ -767,14 +767,14 @@ describe('Transactions Database Operations', () => {
     })
 
     // Edge cases and SQL injection prevention tests
-    it('should handle potential SQL injection in accountId parameter', async () => {
-      const maliciousAccountId = "'; DROP TABLE transactions; --"
+    it('should handle potential SQL injection in appReceiptId parameter', async () => {
+      const maliciousppReceiptId = "'; DROP TABLE transactions; --"
       jest.mocked(db.get).mockResolvedValueOnce(null)
 
-      await queryTransactionByAccountId(maliciousAccountId)
+      await queryTransactionByAppReceiptId(maliciousppReceiptId)
 
       // Parameterized queries should prevent SQL injection
-      expect(db.get).toHaveBeenCalledWith('mock-transaction-db', 'SELECT * FROM transactions WHERE accountId=?', [
+      expect(db.get).toHaveBeenCalledWith('mock-transaction-db', 'SELECT * FROM transactions WHERE appReceiptId=?', [
         "'; DROP TABLE transactions; --",
       ])
     })

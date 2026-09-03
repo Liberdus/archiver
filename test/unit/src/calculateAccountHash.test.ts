@@ -16,7 +16,7 @@ jest.mock('../../../src/types/ajv/Helpers', () => ({
   verifyPayload: jest.fn(),
 }))
 
-jest.mock('../../../src/shardeum/verifyGlobalTxReceipt', () => ({
+jest.mock('../../../src/app/verifyGlobalTxReceipt', () => ({
   verifyGlobalTxAccountChange: jest.fn(),
 }))
 

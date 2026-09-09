@@ -2,12 +2,6 @@ import * as crypto from '../Crypto'
 import { ArchiverReceipt, Receipt, SignedReceipt } from '../dbstore/receipts'
 import { Utils as StringUtils } from '@shardus/lib-types'
 
-
-export type ShardeumReceipt = object & {
-  amountSpent: string
-  readableReceipt: { status: number }
-}
-
 export const verifyAppReceiptData = async (
   receipt: ArchiverReceipt | Receipt,
   existingReceipt?: Receipt | null,

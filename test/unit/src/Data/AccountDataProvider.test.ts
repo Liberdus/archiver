@@ -60,6 +60,14 @@ describe('Data/AccountDataProvider', () => {
   let mockConfig: any
   let mockUtils: any
   let mockNodeList: any
+  const accountPageSql =
+    'SELECT * FROM accounts WHERE (timestamp, accountId) >= (?, ?) AND timestamp < ? AND accountId <= ? AND accountId >= ? ORDER BY timestamp ASC, accountId ASC LIMIT ?'
+
+  const expectAccountPageQuery = (values: unknown[]): void => {
+    const [sql, params] = mockAccount.fetchAccountsBySqlQuery.mock.calls[0]
+    expect(sql.replace(/\s+/g, ' ').trim()).toBe(accountPageSql)
+    expect(params).toEqual(values)
+  }
 
   beforeEach(() => {
     // Clear all mocks
@@ -502,30 +510,45 @@ describe('Data/AccountDataProvider', () => {
 
       await AccountDataProvider.provideAccountDataRequest(validPayload)
 
-      const expectedSql = `SELECT * FROM accounts WHERE accountId >= ? AND accountId BETWEEN ? AND ? AND timestamp BETWEEN ? AND ? ORDER BY timestamp ASC, accountId ASC LIMIT 100`
-
-      expect(mockAccount.fetchAccountsBySqlQuery).toHaveBeenCalledWith(expectedSql, [
-        validPayload.accountOffset,
-        validPayload.accountStart,
-        validPayload.accountEnd,
+      expectAccountPageQuery([
         validPayload.tsStart,
+        validPayload.accountOffset,
         expect.any(Number),
+        validPayload.accountEnd,
+        validPayload.accountStart,
+        100,
       ])
     })
 
-    it('should handle offset when no accountOffset', async () => {
+    it('should start from accountStart when accountOffset is not supplied', async () => {
       validPayload.offset = 50
       validPayload.accountOffset = ''
 
       await AccountDataProvider.provideAccountDataRequest(validPayload)
 
-      const expectedSql = `SELECT * FROM accounts WHERE accountId BETWEEN ? AND ? AND timestamp BETWEEN ? AND ? ORDER BY timestamp ASC, accountId ASC LIMIT 100 OFFSET 50`
-
-      expect(mockAccount.fetchAccountsBySqlQuery).toHaveBeenCalledWith(expectedSql, [
-        validPayload.accountStart,
-        validPayload.accountEnd,
+      expectAccountPageQuery([
         validPayload.tsStart,
+        validPayload.accountStart,
         expect.any(Number),
+        validPayload.accountEnd,
+        validPayload.accountStart,
+        100,
+      ])
+    })
+
+    it('should use the default limit when maxRecords is not an integer', async () => {
+      validPayload.offset = 1.5 as any
+      validPayload.maxRecords = 'invalid' as any
+
+      await AccountDataProvider.provideAccountDataRequest(validPayload)
+
+      expectAccountPageQuery([
+        validPayload.tsStart,
+        validPayload.accountStart,
+        expect.any(Number),
+        validPayload.accountEnd,
+        validPayload.accountStart,
+        100,
       ])
     })
 
@@ -547,19 +570,6 @@ describe('Data/AccountDataProvider', () => {
 
       expect(result.lastUpdateNeeded).toBe(true)
       expect(mockAccount.fetchAccountsBySqlQuery).toHaveBeenCalledTimes(2)
-    })
-
-    it('should handle non-integer offset and maxRecords', async () => {
-      validPayload.offset = 1.5 as any
-      validPayload.maxRecords = 'invalid' as any
-
-      await AccountDataProvider.provideAccountDataRequest(validPayload)
-
-      // Should use safe defaults
-      expect(mockAccount.fetchAccountsBySqlQuery).toHaveBeenCalledWith(
-        expect.stringContaining('LIMIT 100 OFFSET 0'),
-        expect.any(Array)
-      )
     })
   })
 
@@ -701,7 +711,7 @@ describe('Data/AccountDataProvider', () => {
   })
 
   describe('edge cases', () => {
-    it('should handle SQL injection attempts in accountOffset', async () => {
+    it('should fall back to accountStart for an invalid accountOffset', async () => {
       const payload: AccountDataProvider.AccountDataRequestSchema = {
         accountStart: '0'.repeat(64),
         accountEnd: 'f'.repeat(64),
@@ -714,11 +724,39 @@ describe('Data/AccountDataProvider', () => {
 
       await AccountDataProvider.provideAccountDataRequest(payload)
 
-      // The accountOffset is used as a parameter, not concatenated
-      expect(mockAccount.fetchAccountsBySqlQuery).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.arrayContaining(["'; DROP TABLE accounts; --"])
-      )
+      expectAccountPageQuery([
+        payload.tsStart,
+        payload.accountStart,
+        expect.any(Number),
+        payload.accountEnd,
+        payload.accountStart,
+        payload.maxRecords,
+      ])
+    })
+
+    it('should bind a 64-character accountOffset instead of interpolating it into SQL', async () => {
+      // The query path only accepts offsets with exactly 64 characters.
+      const accountOffset = "'; DROP TABLE accounts; --".padEnd(64, 'x')
+      const payload: AccountDataProvider.AccountDataRequestSchema = {
+        accountStart: '0'.repeat(64),
+        accountEnd: 'f'.repeat(64),
+        tsStart: Date.now() - 1000,
+        maxRecords: 100,
+        offset: 0,
+        accountOffset,
+        sign: { owner: 'test', sig: 'test' } as Signature,
+      }
+
+      await AccountDataProvider.provideAccountDataRequest(payload)
+
+      expectAccountPageQuery([
+        payload.tsStart,
+        accountOffset,
+        expect.any(Number),
+        payload.accountEnd,
+        payload.accountStart,
+        payload.maxRecords,
+      ])
     })
 
     it('should handle very large maxRecords', async () => {
@@ -734,10 +772,14 @@ describe('Data/AccountDataProvider', () => {
 
       await AccountDataProvider.provideAccountDataRequest(payload)
 
-      expect(mockAccount.fetchAccountsBySqlQuery).toHaveBeenCalledWith(
-        expect.stringContaining(`LIMIT ${Number.MAX_SAFE_INTEGER}`),
-        expect.any(Array)
-      )
+      expectAccountPageQuery([
+        payload.tsStart,
+        payload.accountStart,
+        expect.any(Number),
+        payload.accountEnd,
+        payload.accountStart,
+        Number.MAX_SAFE_INTEGER,
+      ])
     })
 
     it('should handle database errors gracefully', async () => {

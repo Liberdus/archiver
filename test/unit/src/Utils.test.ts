@@ -270,6 +270,30 @@ describe('Utils', () => {
       expect(isValidSig.isValid).toBe(false)
     })
 
+    // A malformed owner used to throw a TypeError out of verifyMultiSigs on the
+    // `sigs[i].owner.toLowerCase()` access, rather than counting as an invalid signature.
+    it.each([
+      ['a null entry', null],
+      ['an undefined entry', undefined],
+      ['an empty object', {}],
+      ['a missing sig', { owner: '0xd79eFA2f9bB9C780e4Ce05D6b8a15541915e4636' }],
+      ['a missing owner', { sig: '0xdeadbeef' }],
+      ['a non-string owner', { owner: 123, sig: '0xdeadbeef' }],
+      ['a non-string sig', { owner: '0xd79eFA2f9bB9C780e4Ce05D6b8a15541915e4636', sig: 456 }],
+    ])('should treat %s as an invalid signature rather than throwing', (_label, malformedSig) => {
+      const verify = (): ReturnType<typeof Utils.verifyMultiSigs> =>
+        Utils.verifyMultiSigs(
+          objectToSign,
+          [malformedSig] as unknown as Sign[],
+          devPublicKeys,
+          requiredSigs,
+          DevSecurityLevel.HIGH
+        )
+
+      expect(verify).not.toThrow()
+      expect(verify()).toEqual({ isValid: false, validCount: 0 })
+    })
+
     it('should return false if not enough valid signatures', async () => {
       const isValidSig = Utils.verifyMultiSigs(
         objectToSign,

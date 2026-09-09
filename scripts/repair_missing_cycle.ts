@@ -73,7 +73,7 @@ async function checkCycleData(startCycleNumber = 0, latestCycleNumber: number): 
     // Query cycle in batches in parallel using Promise.allSettled
     const promises = cycleBatches.map(async (cycleNumberBatch: number[]) => {
       const sql = 'SELECT counter FROM cycles WHERE counter IN (' + cycleNumberBatch + ') ORDER BY counter ASC'
-      return db.all(sql)
+      return db.all(dbstore.cycleDatabase, sql)
     })
 
     const results = await Promise.allSettled(promises)

@@ -1,34 +1,34 @@
 import * as crypto from '../Crypto'
 import { ArchiverReceipt, SignedReceipt, Receipt } from '../dbstore/receipts'
-import { verifyPayload } from '../types/ajv/Helpers'
-import { AJVSchemaEnum } from '../types/enum/AJVSchemaEnum'
 import { verifyGlobalTxAccountChange } from './verifyGlobalTxReceipt'
 
-
-
-// account types in Shardeum
-export enum AccountType {
-  Account = 0, //  EOA or CA
-  ContractStorage = 1, // Contract storage key value pair
-  ContractCode = 2, // Contract code bytes
-  Receipt = 3, //This holds logs for a TX
-  Debug = 4,
-  NetworkAccount = 5,
-  NodeAccount = 6,
-  NodeRewardReceipt = 7,
-  DevAccount = 8,
-  NodeAccount2 = 9,
-  StakeReceipt = 10,
-  UnstakeReceipt = 11,
-  InternalTxReceipt = 12,
-  SecureAccount = 13,
-}
-
-// Reference: https://github.com/Liberdus/server/blob/84f80564c45b06343df9bed4fe66a1628052a4cc/src/index.ts#L349
+/**
+ * Computes a specific hash for an account object. This function removes any existing
+ * `hash` property from the account object, calculates a new hash based on the account's
+ * data, and then assigns the calculated hash back to the `hash` property of the account.
+ *
+ * @param account - The account object for which the hash is to be calculated.
+ *                  The object is expected to have key-value pairs representing account data.
+ * @returns The newly calculated hash as a string.
+ */
 export const calculateAccountHash = (account: any): string => {
-  account.hash = '' // Not sure this is really necessary
-  account.hash = crypto.hashObj(account)
-  return account.hash
+  // Keep this in sync with the Liberdus server implementation:
+  // https://github.com/Liberdus/server/blob/84f80564c45b06343df9bed4fe66a1628052a4cc/src/index.ts#L349
+  if (account == null || account == undefined) {
+    throw new Error('Account data is null or undefined')
+  }
+
+  try {
+    // Remove the existing hash property from the account object
+    delete account.hash
+
+    // Calculate a new hash based on the account's data and assign it to the hash property
+    account.hash = crypto.hashObj(account)
+    return account.hash
+  } catch (error) {
+    console.error('Error calculating account hash:', error)
+    throw new Error('Failed to calculate account hash')
+  }
 }
 
 /**
@@ -48,7 +48,7 @@ export const calculateAccountHash = (account: any): string => {
  * 2. Ensures the number of before-state hashes matches the number of after-state hashes.
  * 3. Iterates through each account ID in the receipt:
  *    - Verifies that the account exists in the `afterStates` of the receipt.
- *    - Calculates the account-specific hash and compares it with the expected hash.
+ *    - Calculates the account hash and compares it with the expected hash.
  */
 export const verifyNonGlobalTxAccountChange = async (
   receipt: ArchiverReceipt | Receipt,
@@ -135,32 +135,5 @@ export const verifyAccountHash = async (
     failedReasons.push(`Error in verifyAccountHash ${e}`)
     nestedCounterMessages.push('Error in verifyAccountHash')
     return false
-  }
-}
-
-/**
- * Computes a specific hash for an account object. This function removes any existing
- * `hash` property from the account object, calculates a new hash based on the account's
- * data, and then assigns the calculated hash back to the `hash` property of the account.
- *
- * @param account - The account object for which the hash is to be calculated.
- *                  The object is expected to have key-value pairs representing account data.
- * @returns The newly calculated hash as a string.
- */
-export const accountSpecificHash = (account: any): string => {
-  if (account == null || account == undefined) {
-    throw new Error('Account data is null or undefined')
-  }
-
-  try {
-    // Remove the existing hash property from the account object
-    delete account.hash
-
-    // Calculate a new hash based on the account's data and assign it to the hash property
-    account.hash = crypto.hashObj(account)
-    return account.hash
-  } catch (error) {
-    console.error('Error calculating account-specific hash:', error)
-    throw new Error('Failed to calculate account-specific hash')
   }
 }

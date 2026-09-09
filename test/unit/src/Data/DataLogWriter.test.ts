@@ -18,9 +18,9 @@ jest.mock('../../../../src/Config', () => ({
     dataLogWriter: {
       dirName: 'test-logs',
       maxLogFiles: 10,
-      maxCycleBytes: 1000,
-      maxReceiptBytes: 1000,
-      maxOriginalTxBytes: 1000,
+      maxCycleEntries: 1000,
+      maxReceiptEntries: 1000,
+      maxOriginalTxEntries: 1000,
     },
   },
 }))
@@ -39,7 +39,6 @@ describe('DataLogWriter', () => {
   // Cast mocked functions
   const mockedMkdir = fs.mkdir as jest.MockedFunction<typeof fs.mkdir>
   const mockedReadFile = fs.readFile as jest.MockedFunction<typeof fs.readFile>
-  const mockedStat = fs.stat as jest.MockedFunction<typeof fs.stat>
   const mockedWriteFile = fs.writeFile as jest.MockedFunction<typeof fs.writeFile>
   const mockedAppendFile = fs.appendFile as jest.MockedFunction<typeof fs.appendFile>
   const mockedReaddir = fs.readdir as jest.MockedFunction<typeof fs.readdir>
@@ -76,7 +75,6 @@ describe('DataLogWriter', () => {
     mockedWriteFile.mockResolvedValue()
     mockedAppendFile.mockResolvedValue()
     mockedReaddir.mockResolvedValue([] as any)
-    mockedStat.mockResolvedValue({ size: 0 } as any)
 
     // Spy on console
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
@@ -117,8 +115,7 @@ describe('DataLogWriter', () => {
       // Mock readFile calls only for CycleLogWriter
       mockedReadFile
         .mockResolvedValueOnce('cycle-log2.txt') // CycleLogWriter active log
-      mockedStat
-        .mockResolvedValueOnce({ size: 50 } as any) // CycleLogWriter file size
+        .mockResolvedValueOnce('entry\n'.repeat(50)) // CycleLogWriter entries
 
       await initDataLogWriter()
 
@@ -127,7 +124,7 @@ describe('DataLogWriter', () => {
       expect(CycleLogWriter.totalNumberOfEntries).toBe(50)
     })
 
-    it('should rotate log when bytes exceed max', async () => {
+    it('should rotate log when entries reach the maximum', async () => {
       // Only mock exists for CycleLogWriter's active log
       mockedExistsSync
         .mockReturnValueOnce(true) // CycleLogWriter
@@ -138,8 +135,7 @@ describe('DataLogWriter', () => {
       // Mock readFile calls only for CycleLogWriter
       mockedReadFile
         .mockResolvedValueOnce('cycle-log1.txt') // CycleLogWriter active log
-      mockedStat
-        .mockResolvedValueOnce({ size: 1000 } as any) // File size that exceeds max
+        .mockResolvedValueOnce('entry\n'.repeat(1000)) // CycleLogWriter entries
 
       await initDataLogWriter()
 
@@ -174,7 +170,7 @@ describe('DataLogWriter', () => {
       await CycleLogWriter.writeToLog(testData)
 
       expect(mockWriteStream.write).toHaveBeenCalledWith(testData)
-      expect(CycleLogWriter.totalNumberOfEntries).toBe(15)
+      expect(CycleLogWriter.totalNumberOfEntries).toBe(1)
     })
 
     it('should queue multiple writes', async () => {
@@ -191,7 +187,7 @@ describe('DataLogWriter', () => {
       expect(mockWriteStream.write).toHaveBeenCalledWith(data1)
       expect(mockWriteStream.write).toHaveBeenCalledWith(data2)
       expect(mockWriteStream.write).toHaveBeenCalledWith(data3)
-      expect(CycleLogWriter.totalNumberOfEntries).toBe(21)
+      expect(CycleLogWriter.totalNumberOfEntries).toBe(3)
     })
 
     it('should handle write errors', async () => {
@@ -333,7 +329,7 @@ describe('DataLogWriter', () => {
       await CycleLogWriter.endStream()
 
       expect(mockWriteStream.end).toHaveBeenCalled()
-      expect(consoleLogSpy).toHaveBeenCalledWith('✅ Finished writing 50 bytes.')
+      expect(consoleLogSpy).toHaveBeenCalledWith('✅ Finished writing 50.')
     })
 
     it('should handle errors when ending stream', async () => {
@@ -358,9 +354,9 @@ describe('DataLogWriter', () => {
 
       await CycleLogWriter.writeToLog('final entry\n')
 
-      expect(mockWriteStream.write).toHaveBeenCalledWith('End: Number of bytes: 100\n')
+      expect(mockWriteStream.write).toHaveBeenCalledWith('End: Number of entries: 100\n')
       expect(mockWriteStream.end).toHaveBeenCalled()
-      expect(CycleLogWriter.totalNumberOfEntries).toBe(12) // Reset and new entry ('final entry\n')
+      expect(CycleLogWriter.totalNumberOfEntries).toBe(1) // Reset and write the new entry
       expect(CycleLogWriter.logCounter).toBe(2) // Incremented
     })
   })

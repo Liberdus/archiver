@@ -54,6 +54,28 @@ describe('verifyGlobalTxAccountChange', () => {
     expect(failedReasons[0]).toContain('Missing afterStateHash')
   })
 
+  it('rejects a receipt without an after-state account', async () => {
+    const receipt = createReceipt()
+    receipt.afterStates = []
+    const failedReasons: string[] = []
+
+    const result = await verifyGlobalTxAccountChange(receipt, failedReasons)
+
+    expect(result).toBe(false)
+    expect(failedReasons[0]).toContain('Network account after state not found')
+  })
+
+  it('rejects a receipt without a before-state account when addressHash is present', async () => {
+    const receipt = createReceipt()
+    receipt.beforeStates = []
+    const failedReasons: string[] = []
+
+    const result = await verifyGlobalTxAccountChange(receipt, failedReasons)
+
+    expect(result).toBe(false)
+    expect(failedReasons[0]).toContain('Network account before state not found')
+  })
+
   it('rejects a before-state account for a different address', async () => {
     const receipt = createReceipt()
     receipt.beforeStates[0].accountId = 'another-account'

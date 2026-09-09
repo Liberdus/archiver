@@ -141,12 +141,10 @@ describe('Collector Module', () => {
       expect(result).toBe(true)
     })
 
-    it('should reject overwrite when existing receipt has status 1', async () => {
+    it('should reject overwrite when the existing receipt succeeded', async () => {
       const existingReceipt = {
         appReceiptData: {
-          data: {
-            readableReceipt: { status: 1 },
-          },
+          success: true,
         },
       }
       ;(Receipt.queryReceiptByReceiptId as any).mockResolvedValue(existingReceipt)
@@ -156,12 +154,10 @@ describe('Collector Module', () => {
       expect(result).toBe(false)
     })
 
-    it('should allow overwrite when existing receipt has status 0', async () => {
+    it('should allow overwrite when the existing receipt failed', async () => {
       const existingReceipt = {
         appReceiptData: {
-          data: {
-            readableReceipt: { status: 0 },
-          },
+          success: false,
         },
       }
       ;(Receipt.queryReceiptByReceiptId as any).mockResolvedValue(existingReceipt)

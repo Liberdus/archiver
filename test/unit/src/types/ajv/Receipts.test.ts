@@ -265,6 +265,7 @@ describe('ajv/Receipts schemas', () => {
           voteOffsets: [0, 1],
         },
         appReceiptData: {
+          success: true,
           data: { result: 'success' },
         },
         globalModification: false,
@@ -295,6 +296,7 @@ describe('ajv/Receipts schemas', () => {
           },
         },
         appReceiptData: {
+          success: true,
           accountId: 'acc-123',
           data: {},
         },
@@ -344,6 +346,7 @@ describe('ajv/Receipts schemas', () => {
           },
         ],
         appReceiptData: {
+          success: true,
           data: {},
         },
         globalModification: false,
@@ -471,6 +474,7 @@ describe('ajv/Receipts schemas', () => {
           },
         },
         appReceiptData: {
+          success: true,
           data: { status: 'applied' },
         },
         globalModification: false,
@@ -548,6 +552,7 @@ describe('ajv/Receipts schemas', () => {
         afterStates: [],
         beforeStates: [],
         appReceiptData: {
+          success: true,
           accountId: 'acc',
           data: {},
           extraField: 'allowed',

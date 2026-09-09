@@ -3,8 +3,8 @@ import { ArchiverReceipt, SignedReceipt, Receipt } from '../dbstore/receipts'
 import { verifyGlobalTxAccountChange } from './verifyGlobalTxReceipt'
 
 /**
- * Computes a specific hash for an account object. This function removes any existing
- * `hash` property from the account object, calculates a new hash based on the account's
+ * Computes a specific hash for an account object. This function clears any existing
+ * `hash` property on the account object, calculates a new hash based on the account's
  * data, and then assigns the calculated hash back to the `hash` property of the account.
  *
  * @param account - The account object for which the hash is to be calculated.
@@ -19,8 +19,8 @@ export const calculateAccountHash = (account: any): string => {
   }
 
   try {
-    // Remove the existing hash property from the account object
-    delete account.hash
+    // Keep the hash field blank while calculating, matching the Liberdus server implementation.
+    account.hash = ''
 
     // Calculate a new hash based on the account's data and assign it to the hash property
     account.hash = crypto.hashObj(account)

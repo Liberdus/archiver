@@ -352,13 +352,13 @@ export const computeMedian = (arr: number[] = [], sort = true): number => {
       return arr[0]
     }
     default: {
-      const mid = len / 2
+      const mid = Math.floor(len / 2)
       if (len % 2 === 0) {
         // eslint-disable-next-line security/detect-object-injection
-        return arr[mid]
-      } else {
-        return (arr[Math.floor(mid)] + arr[Math.ceil(mid)]) / 2
+        return (arr[mid - 1] + arr[mid]) / 2
       }
+      // eslint-disable-next-line security/detect-object-injection
+      return arr[mid]
     }
   }
 }
@@ -616,6 +616,7 @@ export function verifyMultiSigs(
       let isValidSignature = false
       try {
         if (config.isEthereumSigningEnabled) {
+          // TODO(SHARD-2110): Confirm this uses the same payload representation as Ethereum signers.
           isValidSignature =
             ethers.verifyMessage(payload_hash, sigs[i].sig).toLowerCase() === sigs[i].owner.toLowerCase()
         } else {

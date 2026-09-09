@@ -6,13 +6,9 @@ import { calculateAccountHash } from './calculateAccountHash'
  * Verifies the account hash in a global transaction receipt
  *
  * This function validates that the account hashes in a receipt match the calculated
- * hashes of the account data. It checks:
- * 1. If the receipt passes schema validation
- * 2. If the receipt is a GlobalTxReceipt, it delegates to verifyGlobalTxAccountChange
- * 3. Otherwise, it verifies:
- *    - Account IDs, before and after state hashes have matching lengths
- *    - Each account in afterStates has a matching ID from the receipt
- *    - The calculated hash of each account matches the expected hash in the receipt
+ * hashes of the account data. It verifies that the receipt has the required state
+ * copies, that each state copy belongs to the global account, and that its calculated
+ * hash matches the corresponding hash in the global transaction.
  *
  * @param receipt - The transaction receipt to verify
  * @param failedReasons - Array to collect failure reasons if verification fails
@@ -35,7 +31,21 @@ export const verifyGlobalTxAccountChange = async (
       nestedCounterMessages.push(`Missing afterStateHash in globalModification tx`)
       return false
     }
+    if (!receipt.afterStates || receipt.afterStates.length === 0) {
+      failedReasons.push(
+        `Network account after state not found ${receipt.tx.txId} , ${receipt.cycle} , ${receipt.tx.timestamp}`
+      )
+      nestedCounterMessages.push(`Network account after state not found`)
+      return false
+    }
     if (addressHash !== '') {
+      if (!receipt.beforeStates || receipt.beforeStates.length === 0) {
+        failedReasons.push(
+          `Network account before state not found ${receipt.tx.txId} , ${receipt.cycle} , ${receipt.tx.timestamp}`
+        )
+        nestedCounterMessages.push(`Network account before state not found`)
+        return false
+      }
       for (const account of receipt.beforeStates) {
         if (account.accountId !== address) {
           failedReasons.push(

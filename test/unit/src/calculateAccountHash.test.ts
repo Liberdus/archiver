@@ -1,9 +1,6 @@
 import { expect, describe, it, beforeEach, jest } from '@jest/globals'
 import * as crypto from '../../../src/Crypto'
-import {
-  calculateAccountHash,
-  verifyNonGlobalTxAccountChange,
-} from '../../../src/app/calculateAccountHash'
+import { calculateAccountHash, verifyNonGlobalTxAccountChange } from '../../../src/app/calculateAccountHash'
 import { ArchiverReceipt } from '../../../src/dbstore/receipts'
 
 jest.mock('../../../src/Crypto', () => ({
@@ -17,9 +14,9 @@ describe('calculateAccountHash', () => {
     jest.clearAllMocks()
   })
 
-  it('removes an existing hash, calculates, and stores the new hash', () => {
+  it('blanks an existing hash, calculates, and stores the new hash', () => {
     mockHashObj.mockImplementation((account) => {
-      expect(account).toEqual({ balance: '100' })
+      expect(account).toEqual({ balance: '100', hash: '' })
       return 'calculated-hash'
     })
     const account = { balance: '100', hash: 'stale-hash' }
@@ -88,6 +85,17 @@ describe('verifyNonGlobalTxAccountChange', () => {
 
     expect(result).toBe(false)
     expect(failedReasons[0]).toContain('Modified account count')
+  })
+
+  it('rejects a receipt whose before- and after-state hash counts differ', async () => {
+    const receipt = createReceipt()
+    ;(receipt.signedReceipt as any).proposal.beforeStateHashes = []
+    const failedReasons: string[] = []
+
+    const result = await verifyNonGlobalTxAccountChange(receipt, failedReasons)
+
+    expect(result).toBe(false)
+    expect(failedReasons[0]).toContain('Account state hash before and after count does not match')
   })
 
   it('rejects a missing after-state account', async () => {

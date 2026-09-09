@@ -14,7 +14,7 @@ jest.mock('../../../../src/dbstore/receipts', () => ({
 }))
 
 // Mock the accountSpecificHash function
-jest.mock('../../../../src/liberdus/calculateAccountHash', () => ({
+jest.mock('../../../../src/app/calculateAccountHash', () => ({
   accountSpecificHash: jest.fn(),
 }))
 

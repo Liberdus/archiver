@@ -1,21 +1,21 @@
-import { expect, describe, it, beforeEach, jest } from '@jest/globals'
-import * as crypto from '../../../src/Crypto'
-import { calculateAccountHash, verifyNonGlobalTxAccountChange } from '../../../src/app/calculateAccountHash'
-import { ArchiverReceipt } from '../../../src/dbstore/receipts'
-
-jest.mock('../../../src/Crypto', () => ({
-  hashObj: jest.fn(),
-}))
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals'
+import * as core from '@shardus/lib-crypto-utils'
+import { Utils as StringUtils } from '@shardus/lib-types'
+import * as crypto from '../../../../src/Crypto'
+import { calculateAccountHash, verifyNonGlobalTxAccountChange } from '../../../../src/app/calculateAccountHash'
+import { ArchiverReceipt } from '../../../../src/dbstore/receipts'
 
 describe('calculateAccountHash', () => {
-  const mockHashObj = jest.mocked(crypto.hashObj)
-
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('blanks an existing hash, calculates, and stores the new hash', () => {
-    mockHashObj.mockImplementation((account) => {
+    const hashObjSpy = jest.spyOn(crypto, 'hashObj').mockImplementation((account) => {
       expect(account).toEqual({ balance: '100', hash: '' })
       return 'calculated-hash'
     })
@@ -23,6 +23,27 @@ describe('calculateAccountHash', () => {
 
     expect(calculateAccountHash(account)).toBe('calculated-hash')
     expect(account.hash).toBe('calculated-hash')
+    expect(hashObjSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('matches the Liberdus server algorithm on a realistic account', () => {
+    core.init('69fa4195670576c0160d660c3be36556ff8d504725be8a59b5a96509e0c994bc')
+    core.setCustomStringifier(StringUtils.safeStringify, 'shardus_safeStringify')
+
+    const account: any = {
+      id: 'a1b2c3',
+      type: 'UserAccount',
+      data: { balance: '1000', toll: null },
+      timestamp: 1757404800000,
+      hash: 'stale-hash-from-the-wire',
+    }
+
+    // Keep this in sync with Liberdus/server @84f8056 src/index.ts:349.
+    const serverSide: any = { ...account }
+    serverSide.hash = ''
+    serverSide.hash = core.hashObj(serverSide)
+
+    expect(calculateAccountHash({ ...account })).toBe(serverSide.hash)
   })
 
   it('rejects null account data', () => {
@@ -30,19 +51,16 @@ describe('calculateAccountHash', () => {
   })
 
   it('reports a hash-calculation failure', () => {
-    mockHashObj.mockImplementation(() => {
+    jest.spyOn(crypto, 'hashObj').mockImplementation(() => {
       throw new Error('Hash calculation failed')
     })
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined)
+    jest.spyOn(console, 'error').mockImplementation(() => undefined)
 
     expect(() => calculateAccountHash({ balance: '100' })).toThrow('Failed to calculate account hash')
-    consoleErrorSpy.mockRestore()
   })
 })
 
 describe('verifyNonGlobalTxAccountChange', () => {
-  const mockHashObj = jest.mocked(crypto.hashObj)
-
   const createReceipt = (): ArchiverReceipt => {
     return {
       tx: { txId: 'tx-1', timestamp: 123 },
@@ -64,8 +82,12 @@ describe('verifyNonGlobalTxAccountChange', () => {
     jest.clearAllMocks()
   })
 
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('accepts an after-state hash that matches the proposal', async () => {
-    mockHashObj.mockReturnValue('after-hash')
+    jest.spyOn(crypto, 'hashObj').mockReturnValue('after-hash')
     const failedReasons: string[] = []
     const nestedCounterMessages: string[] = []
 
@@ -110,7 +132,7 @@ describe('verifyNonGlobalTxAccountChange', () => {
   })
 
   it('rejects an after-state hash that does not match the proposal', async () => {
-    mockHashObj.mockReturnValue('different-hash')
+    jest.spyOn(crypto, 'hashObj').mockReturnValue('different-hash')
     const failedReasons: string[] = []
 
     const result = await verifyNonGlobalTxAccountChange(createReceipt(), failedReasons)

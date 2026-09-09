@@ -70,18 +70,22 @@ describe('Accounts Module', () => {
 
       // Verify
       expect(db.run).toHaveBeenCalledTimes(1)
-      expect(db.run).toHaveBeenCalledWith(
-        accountDatabase,
-        'INSERT OR REPLACE INTO accounts (accountId, data, timestamp, hash, cycleNumber, isGlobal) VALUES (?, ?, ?, ?, ?, ?)',
-        [
-          sampleAccount.accountId,
-          JSON.stringify(sampleAccount.data),
-          sampleAccount.timestamp,
-          sampleAccount.hash,
-          sampleAccount.cycleNumber,
-          sampleAccount.isGlobal,
-        ]
+      const [database, sql, values] = jest.mocked(db.run).mock.calls[0]
+      expect(database).toBe(accountDatabase)
+      expect(sql.replace(/\s+/g, ' ').trim()).toBe(
+        'INSERT INTO accounts (accountId, data, timestamp, hash, cycleNumber, isGlobal) VALUES (?, ?, ?, ?, ?, ?) ' +
+          'ON CONFLICT(accountId) DO UPDATE SET cycleNumber = excluded.cycleNumber, timestamp = excluded.timestamp, ' +
+          'data = excluded.data, hash = excluded.hash, isGlobal = excluded.isGlobal ' +
+          'WHERE excluded.timestamp > accounts.timestamp'
       )
+      expect(values).toEqual([
+        sampleAccount.accountId,
+        JSON.stringify(sampleAccount.data),
+        sampleAccount.timestamp,
+        sampleAccount.hash,
+        sampleAccount.cycleNumber,
+        sampleAccount.isGlobal,
+      ])
       expect(SerializeToJsonString).toHaveBeenCalledWith(sampleAccount.data)
     })
 

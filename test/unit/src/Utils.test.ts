@@ -1,7 +1,6 @@
 import * as Utils from '../../../src/Utils'
 import { DevSecurityLevel } from '../../../src/types/security'
 import { Sign } from '../../../src/types/internalTxType'
-import { Wallet } from 'ethers'
 import { safeStringify } from '@shardus/lib-types/build/src/utils/functions/stringify'
 import * as fs from 'fs'
 import * as crypto from '@shardus/lib-crypto-utils'
@@ -99,16 +98,12 @@ describe('Utils', () => {
     })
   })
 
-  /*
-    TODO: Fix the computeMedian function
-    It returns the wrong median for both sorted array and unsorted array
-  */
   describe('computeMedian', () => {
-    it.skip('should compute median for odd length array', () => {
+    it('should compute median for odd length array', () => {
       expect(Utils.computeMedian([1, 2, 3])).toEqual(2)
     })
 
-    it.skip('should compute median for even length array', () => {
+    it('should compute median for even length array', () => {
       expect(Utils.computeMedian([1, 2, 3, 4])).toEqual(2.5)
     })
 
@@ -120,8 +115,8 @@ describe('Utils', () => {
       expect(Utils.computeMedian([5])).toEqual(5)
     })
 
-    it.skip('should handle unsorted array', () => {
-      expect(Utils.computeMedian([3, 1, 4, 2], false)).toEqual(2.5)
+    it('should handle unsorted array', () => {
+      expect(Utils.computeMedian([3, 1, 4, 2])).toEqual(2.5)
     })
   })
 
@@ -131,12 +126,9 @@ describe('Utils', () => {
       expect(Utils.binarySearch(arr, 3)).toEqual(2)
     })
 
-    /*
-            Returns -6 for non-existing element
-        */
-    it.skip('should return -1 for non-existing element', () => {
+    it('should return the negative insertion point for a non-existing element', () => {
       const arr = [1, 2, 3, 4, 5]
-      expect(Utils.binarySearch(arr, 6)).toEqual(-1)
+      expect(Utils.binarySearch(arr, 6)).toEqual(-6)
     })
 
     it('should work with custom comparator', () => {
@@ -194,27 +186,25 @@ describe('Utils', () => {
   describe('verifyMultiSigs', () => {
     const requiredSigs = 1
     const objectToSign = { type: 'test', data: [{ address: '0xd79eFA2f9bB9C780e4Ce05D6b8a15541915e4636' }] }
-    const testWallet = new Wallet('0x1234567890123456789012345678901234567890123456789012345678901234')
-    const testAddress = testWallet.address
-    const devPublicKeys = {
-      [testAddress]: DevSecurityLevel.HIGH,
+    let testKeypair: ReturnType<typeof crypto.generateKeypair>
+    let testAddress: string
+    let devPublicKeys: { [key: string]: DevSecurityLevel }
+
+    beforeAll(() => {
+      crypto.init('69fa4195670576c0160d660c3be36556ff8d504725be8a59b5a96509e0c994bc')
+      crypto.setCustomStringifier(safeStringify, 'shardus_safeStringify')
+      testKeypair = crypto.generateKeypair()
+      testAddress = testKeypair.publicKey
+      devPublicKeys = { [testAddress]: DevSecurityLevel.HIGH }
+    })
+
+    const getTestSignatureObject = (): Sign => {
+      const signedPayload = { ...objectToSign }
+      return crypto.signObj(signedPayload, testKeypair.secretKey, testKeypair.publicKey).sign
     }
 
-    const getTestSignatureObject = async (): Promise<Sign> => {
-      const messageToSign = safeStringify(objectToSign)
-      const signature = await testWallet.signMessage(messageToSign)
-      return {
-        owner: testAddress,
-        sig: signature,
-      }
-    }
-
-    /*
-            Fix the verifyMultiSigs: Sign the payload instead of hash of the payload
-            Already reported: SHARD-2110
-        */
-    it.skip('should return true', async () => {
-      const signatureObject = await getTestSignatureObject()
+    it('should return true for a valid Liberdus signature', () => {
+      const signatureObject = getTestSignatureObject()
       const isValidSig = Utils.verifyMultiSigs(
         objectToSign,
         [signatureObject],
@@ -227,10 +217,10 @@ describe('Utils', () => {
       expect(isValidSig.validCount).toEqual(1)
     })
 
-    it('should return false because of invalid payload', async () => {
+    it('should return false because of invalid payload', () => {
       const isValidSig = Utils.verifyMultiSigs(
         { type: 'gold', data: [{ address: '0x01' }] },
-        [await getTestSignatureObject()],
+        [getTestSignatureObject()],
         devPublicKeys,
         requiredSigs,
         DevSecurityLevel.HIGH
@@ -239,10 +229,10 @@ describe('Utils', () => {
       expect(isValidSig.isValid).toBe(false)
     })
 
-    it('should return false because of signer is not a multi sig signer', async () => {
+    it('should return false because the signer is not a multi-sig signer', () => {
       const isValidSig = Utils.verifyMultiSigs(
         objectToSign,
-        [await getTestSignatureObject()],
+        [getTestSignatureObject()],
         { '0x1e5e12568b7103E8B22cd680A6fa6256DD66ED76': DevSecurityLevel.HIGH },
         requiredSigs,
         DevSecurityLevel.HIGH

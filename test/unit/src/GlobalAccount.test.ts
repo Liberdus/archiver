@@ -52,7 +52,7 @@ jest.mock('../../../src/Utils', () => ({
 }))
 
 jest.mock('../../../src/app/calculateAccountHash', () => ({
-  accountSpecificHash: jest.fn(),
+  calculateAccountHash: jest.fn(),
 }))
 
 jest.mock('../../../src/app/allowedArchiversManager', () => ({

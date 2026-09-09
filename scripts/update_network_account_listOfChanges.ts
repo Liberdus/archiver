@@ -6,7 +6,7 @@ import * as dbstore from '../src/dbstore'
 import * as AccountDB from '../src/dbstore/accounts'
 import { startSaving } from '../src/saveConsoleOutput'
 import * as Logger from '../src/Logger'
-import { accountSpecificHash } from '../src/app/calculateAccountHash'
+import { calculateAccountHash } from '../src/app/calculateAccountHash'
 import { addSigListeners } from '../src/State'
 import { Utils as StringUtils } from '@shardus/lib-types'
 import { initAjvSchemas } from '../src/types/ajv/Helpers'
@@ -339,7 +339,7 @@ const runProgram = async (): Promise<void> => {
     if (confirmation.toLowerCase() === 'yes' || confirmation.toLowerCase() === 'y') {
       networkAccount.data.listOfChanges.push(changes)
 
-      const calculatedAccountHash = accountSpecificHash(networkAccount.data)
+      const calculatedAccountHash = calculateAccountHash(networkAccount.data)
       networkAccount.hash = calculatedAccountHash
       networkAccount.data.hash = calculatedAccountHash
 

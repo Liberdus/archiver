@@ -7,7 +7,7 @@ import * as dbstore from '../src/dbstore'
 import * as AccountDB from '../src/dbstore/accounts'
 import { startSaving } from '../src/saveConsoleOutput'
 import * as Logger from '../src/Logger'
-import { AccountType, accountSpecificHash } from '../src/app/calculateAccountHash'
+import { calculateAccountHash } from '../src/app/calculateAccountHash'
 import { addSigListeners } from '../src/State'
 import { Utils as StringUtils } from '@shardus/lib-types'
 import { initAjvSchemas } from '../src/types/ajv/Helpers'
@@ -52,7 +52,7 @@ const runProgram = async (): Promise<void> => {
       if (accountHash1 !== accountHash2) {
         console.log(account.accountId, 'accountHash', accountHash1, 'accountHash2', accountHash2)
       }
-      const calculatedAccountHash = accountSpecificHash(account.data)
+      const calculatedAccountHash = calculateAccountHash(account.data)
 
       if (accountHash1 !== calculatedAccountHash) {
         console.log(account.accountId, 'accountHash1', accountHash1, 'calculatedAccountHash', calculatedAccountHash)

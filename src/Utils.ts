@@ -598,6 +598,11 @@ export function verifyMultiSigs(
 
   for (let i = 0; i < sigs.length; i++) {
     /* eslint-disable security/detect-object-injection */
+    // Skip malformed entries. A missing or non-string owner would otherwise throw out of this
+    // function on the .toLowerCase() access below. A bad sig is caught by the try/catch further
+    // down, but rejecting it here is cheaper and makes the expected shape explicit.
+    if (!sigs[i] || typeof sigs[i].owner !== 'string' || typeof sigs[i].sig !== 'string') continue
+
     // The sig owner has not been seen before
     // The sig owner is listed on the server
     // The sig owner has enough security clearance
@@ -609,15 +614,19 @@ export function verifyMultiSigs(
       allowedPubkeys[sigs[i].owner] >= requiredSecurityLevel
     ) {
       let isValidSignature = false
-      if (config.isEthereumSigningEnabled) {
-        isValidSignature =
-          ethers.verifyMessage(payload_hash, sigs[i].sig).toLowerCase() === sigs[i].owner.toLowerCase()
-      } else {
-        const signedObj = {
-          ...rawPayload,
-          sign: sigs[i],
+      try {
+        if (config.isEthereumSigningEnabled) {
+          isValidSignature =
+            ethers.verifyMessage(payload_hash, sigs[i].sig).toLowerCase() === sigs[i].owner.toLowerCase()
+        } else {
+          const signedObj = {
+            ...rawPayload,
+            sign: sigs[i],
+          }
+          isValidSignature = crypto.verifyObj(signedObj)
         }
-        isValidSignature = crypto.verifyObj(signedObj)
+      } catch {
+        isValidSignature = false
       }
       if (!isValidSignature) continue
       validSigs++

@@ -5,11 +5,12 @@ import { Utils as StringUtils } from '@shardus/lib-types'
 import { allowedArchiversManager } from '../../../../src/app/allowedArchiversManager'
 import * as Logger from '../../../../src/Logger'
 import { DevSecurityLevel } from '../../../../src/types/security'
-import { verifyMultiSigs } from '../../../../src/services/ticketVerification'
+import { verifyMultiSigs } from '../../../../src/Utils'
 import { config } from '../../../../src/Config'
 
 // Mock external dependencies
 jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
   readFileSync: jest.fn(),
   writeFileSync: jest.fn(),
   unlinkSync: jest.fn(),
@@ -36,7 +37,7 @@ jest.mock('../../../../src/Logger', () => ({
   },
 }))
 
-jest.mock('../../../../src/services/ticketVerification', () => ({
+jest.mock('../../../../src/Utils', () => ({
   verifyMultiSigs: jest.fn(),
 }))
 

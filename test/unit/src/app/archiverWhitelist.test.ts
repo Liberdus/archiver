@@ -5,9 +5,11 @@ import { Utils as StringUtils } from '@shardus/lib-types'
 import { allowedArchiversManager } from '../../../../src/app/allowedArchiversManager'
 import * as Logger from '../../../../src/Logger'
 import { DevSecurityLevel } from '../../../../src/types/security'
+import { verifyMultiSigs } from '../../../../src/Utils'
 
 // Mock the fs module
 jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
   readFileSync: jest.fn(),
   writeFileSync: jest.fn(),
   unlinkSync: jest.fn(),
@@ -22,6 +24,10 @@ jest.mock('../../../../src/Logger', () => ({
     error: jest.fn(),
     debug: jest.fn(),
   },
+}))
+
+jest.mock('../../../../src/Utils', () => ({
+  verifyMultiSigs: jest.fn(() => ({ isValid: true, validCount: 1 })),
 }))
 
 describe('AllowedArchiversManager', () => {
@@ -106,6 +112,7 @@ describe('AllowedArchiversManager', () => {
   test('should log error if config has invalid signatures', () => {
     const invalidConfig = { ...actualConfig, signatures: [] }
     jest.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(invalidConfig))
+    jest.mocked(verifyMultiSigs).mockReturnValue({ isValid: false, validCount: 0 })
     allowedArchiversManager.initialize(configPath)
     expect(Logger.mainLogger.error).toHaveBeenCalledWith('Invalid signatures in new config')
   })

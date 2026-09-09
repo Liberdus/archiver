@@ -48,9 +48,9 @@ const validateReceiptData = (receipt: Receipt.ArchiverReceipt): boolean => {
   let err = Utils.validateTypes(receipt, {
     tx: 'o',
     cycle: 'n',
-    beforeStates: 'a',
-    afterStates: 'a',
-    appReceiptData: 'o',
+    beforeStates: 'a?',
+    afterStates: 'a?',
+    appReceiptData: 'o?',
     signedReceipt: 'o',
     globalModification: 'b',
   })
@@ -67,7 +67,7 @@ const validateReceiptData = (receipt: Receipt.ArchiverReceipt): boolean => {
     console.error('Invalid receipt tx data', err)
     return false
   }
-  for (const account of receipt.beforeStates) {
+  for (const account of receipt.beforeStates ?? []) {
     err = Utils.validateTypes(account, {
       accountId: 's',
       data: 'o',
@@ -80,7 +80,7 @@ const validateReceiptData = (receipt: Receipt.ArchiverReceipt): boolean => {
       return false
     }
   }
-  for (const account of receipt.afterStates) {
+  for (const account of receipt.afterStates ?? []) {
     err = Utils.validateTypes(account, {
       accountId: 's',
       data: 'o',

@@ -45,8 +45,8 @@ describe('ReceiptUtils', () => {
       })
     })
 
-    describe('Status filtering', () => {
-      it('should return undefined when no receipts have success status', () => {
+    describe('Success filtering', () => {
+      it('should return undefined when no receipts succeeded', () => {
         const receipts: ReceiptType[] = [
           createMockReceipt({ status: 0 }),
           createMockReceipt({ status: 2 }),
@@ -57,7 +57,7 @@ describe('ReceiptUtils', () => {
         expect(result).toBeUndefined()
       })
 
-      it('should only consider receipts with status=1', () => {
+      it('should only consider successful receipts', () => {
         const successReceipt = createMockReceipt({ status: 1 })
         const failureReceipt = createMockReceipt({ status: 0 })
         const receipts: ReceiptType[] = [failureReceipt, successReceipt]
@@ -66,7 +66,7 @@ describe('ReceiptUtils', () => {
         expect(result).toBe(successReceipt)
       })
 
-      it('should handle receipts with missing or malformed readableReceipt', () => {
+      it('should ignore receipts with missing or malformed appReceiptData', () => {
         const receipts: ReceiptType[] = [
           createMockReceipt({ status: 1 }),
           createMockReceipt({ status: 1, appReceiptData: {} as any }),
@@ -328,20 +328,13 @@ function createMockReceipt(
       originalTxData: {},
     },
     cycle: 1,
-    beforeStateAccounts: [],
-    accounts: [],
-    appliedReceipt: {},
     appReceiptData:
       appReceiptData !== undefined
         ? appReceiptData
         : {
-            data: {
-              readableReceipt: {
-                status,
-              },
-            },
+            success: status === 1,
+            data: {},
           },
-    executionShardKey: 'shard1',
     globalModification: false,
     signedReceipt:
       signedReceipt !== undefined

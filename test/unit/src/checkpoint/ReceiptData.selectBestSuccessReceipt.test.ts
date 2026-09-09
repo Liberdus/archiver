@@ -45,8 +45,8 @@ function makeReceipt({
     globalModification,
     tx: { txId, timestamp },
     appReceiptData: {
+      success: status === 1,
       data: {
-        readableReceipt: { status },
         ...extra,
       },
     },
@@ -106,21 +106,15 @@ describe('selectBestSuccessReceipt', () => {
     if ('voteOffsets' in r1.signedReceipt && 'voteOffsets' in r2.signedReceipt) {
       r2.signedReceipt.voteOffsets = [...(r1.signedReceipt as any).voteOffsets]
     }
-    const getSigPack = (r: ReceiptType) =>
-      'signaturePack' in r.signedReceipt && (r.signedReceipt as any).signaturePack
-        ? (r.signedReceipt as any).signaturePack
-        : undefined
-    let winner
-    try {
-      winner =
-        Crypto.hash(StringUtils.safeStringify(getSigPack(r1)) || '').toLowerCase() <
-        Crypto.hash(StringUtils.safeStringify(getSigPack(r2)) || '').toLowerCase()
-          ? r1
-          : r2
-    } catch (e) {
-      winner = r1
-    }
-    expect(selectBestSuccessReceipt([r1, r2])).toBe(winner)
+    const hashSpy = jest
+      .spyOn(Crypto, 'hash')
+      .mockReturnValueOnce('same-receipt-hash')
+      .mockReturnValueOnce('signature-hash-b')
+      .mockReturnValueOnce('same-receipt-hash')
+      .mockReturnValueOnce('signature-hash-a')
+
+    expect(selectBestSuccessReceipt([r1, r2])).toBe(r2)
+    hashSpy.mockRestore()
   })
 
   it('ignores failed receipts even if they have better times', () => {
@@ -135,9 +129,9 @@ describe('selectBestSuccessReceipt', () => {
     expect(selectBestSuccessReceipt([r1, r2])).toBe(r1) // r1 medianTime = 1000, r2 = 2000
   })
 
-  it('handles receipts with missing readableReceipt', () => {
+  it('ignores receipts with missing success status', () => {
     const r1 = makeReceipt({})
-    delete (r1.appReceiptData.data as any).readableReceipt
+    delete (r1.appReceiptData as any).success
     const r2 = makeReceipt({ status: 1 })
     expect(selectBestSuccessReceipt([r1, r2])).toBe(r2)
   })
@@ -184,7 +178,7 @@ describe('selectBestSuccessReceipt', () => {
       cycle: 0,
       globalModification: false,
       tx: { txId: 'tx', timestamp: 1 },
-      appReceiptData: { data: { readableReceipt: { status: 1 } } },
+      appReceiptData: { success: true, data: {} },
       signedReceipt: {
         sign: {
           owner: 'owner1',

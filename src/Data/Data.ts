@@ -551,7 +551,12 @@ export function collectCycleData(
       }
     }
 
-    receivedCertSigners = (cycle as subscriptionCycleData).certificates.map((cert) => cert.sign.owner)
+    // When validateCerts is skipped (no active nodes), avoid .map throw on missing/non-array
+    // certificates or malformed entries (e.g. [null], [{}], [{ sign: null }]).
+    const certs = (cycle as subscriptionCycleData).certificates
+    receivedCertSigners = (Array.isArray(certs) ? certs : [])
+      .map((c) => c?.sign?.owner)
+      .filter(Boolean)
     Logger.mainLogger.debug(
       `collectCycleData: Received ${receivedCertSigners.length} certificate signers for cycle ${cycle.counter}`
     )
@@ -728,6 +733,31 @@ export function collectCycleData(
         Logger.mainLogger.debug(
           `collectCycleData: Processing cycle ${cycle.counter} with best marker ${bestMarker}, score: ${bestScore}`
         )
+
+        // Guard against empty bestMarker (e.g. cycle received with 0 certificates / all scores 0).
+        // Accessing receivedCycleTracker[counter][''] would throw TypeError reading 'cycleInfo'.
+        if (!bestMarker || bestScore <= 0 || !receivedCycleTracker[cycle.counter][bestMarker]?.cycleInfo) {
+          nestedCountersInstance.countEvent('collectCycleData', 'no_valid_best_marker_' + cycle.mode, 1)
+          Logger.mainLogger.warn(
+            `collectCycleData: Skipping cycle ${cycle.counter} - no valid best marker (bestMarker='${bestMarker}', bestScore=${bestScore})`
+          )
+          ArchiverLogging.logDataSync({
+            sourceArchiver: senderInfo,
+            targetArchiver: config.ARCHIVER_IP,
+            cycle: cycle.counter,
+            dataType: 'CYCLE_RECORD',
+            dataHash: bestMarker || cycle.marker,
+            status: 'ERROR',
+            operationId,
+            metrics: {
+              duration: Date.now() - startTime,
+              dataSize: StringUtils.safeStringify(cycle).length,
+            },
+            error: 'No valid best marker after scoring cycle certificates',
+          })
+          return
+        }
+
         processCycles([receivedCycleTracker[cycle.counter][bestMarker].cycleInfo])
         receivedCycleTracker[cycle.counter]['saved'] = true
 
@@ -2965,7 +2995,15 @@ function validateCerts(
   cycleData: P2PTypes.CycleCreatorTypes.CycleData
 ) {
   nestedCountersInstance.countEvent('validateCerts', 'validation', 1)
-  Logger.mainLogger.debug(`validateCerts: Validating ${certs.length} certificates against marker ${inpMarker}`)
+  Logger.mainLogger.debug(`validateCerts: Validating ${certs?.length ?? 0} certificates against marker ${inpMarker}`)
+
+  // Reject empty/missing certificate lists. Previously this returned true and allowed
+  // processCycleWithPrevMarker to run with score 0 / empty bestMarker, crashing on .cycleInfo.
+  if (!Array.isArray(certs) || certs.length === 0) {
+    nestedCountersInstance.countEvent('validateCerts', 'emptyCerts', 1)
+    Logger.mainLogger.warn('validateCerts: no certificates provided')
+    return false
+  }
 
   for (const cert of certs) {
     const cleanCert: P2PTypes.CycleCreatorTypes.CycleCert = {

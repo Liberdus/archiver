@@ -1117,6 +1117,11 @@ export async function subscribeNodeFromThisSubset(
   nodeList: NodeList.ConsensusNodeInfo[],
   roundIndex: number
 ): Promise<void> {
+  if (!nodeList || nodeList.length === 0) {
+    Logger.mainLogger.error(`subscribeNodeFromThisSubset: empty nodeList for roundIndex ${roundIndex}`)
+    return
+  }
+
   // First check if there is any subscribed node from this subset
   const subscribedNodesFromThisSubset = []
   for (const node of nodeList) {
@@ -1136,6 +1141,9 @@ export async function subscribeNodeFromThisSubset(
   } else {
     nestedCountersInstance.countEvent('nodeSubscription', 'add consensor: ')
   }
+  // Remainder/last subsets can be smaller than the desired subscription count
+  numberOfNodesToSubsribe = Math.min(numberOfNodesToSubsribe, nodeList.length)
+
   if (subscribedNodesFromThisSubset.length > numberOfNodesToSubsribe) {
     // If there is more than one subscribed node from this subset, unsubscribe the extra ones
     for (const publicKey of subscribedNodesFromThisSubset.splice(numberOfNodesToSubsribe)) {
@@ -1179,16 +1187,20 @@ export async function subscribeNodeFromThisSubset(
     if (subsetList.length > 0) {
       newSenderInfo = subsetList[Math.floor(Math.random() * subsetList.length)]
     } else {
+      // Already subscribed as many as requested; avoid an unnecessary retry sleep
+      if (subscribedNodesFromThisSubset.length >= numberOfNodesToSubsribe) break
+
       subsetList = [...nodeList]
       retry++
       // Linear delay (retry * 1s, max 5s) when subsetList runs out
       const delay = Math.min(retry, 5) * 1000
       Logger.mainLogger.debug(`subsetList exhausted, retry ${retry}, waiting ${delay}ms`)
-      if (retry > 10) {
+      // Log every 10 retries to avoid flooding while still surfacing stuck subsets
+      if (retry % 10 === 0) {
         Logger.fatalLogger.fatal(
-          `subscribeNodeFromThisSubset: failed to subscribe after ${retry} retries, nodeList: ${JSON.stringify(
+          `subscribeNodeFromThisSubset: failed to subscribe after ${retry} retries, subscribed: ${subscribedNodesFromThisSubset.length}/${numberOfNodesToSubsribe}, nodeList: ${JSON.stringify(
             nodeList
-          )}}`
+          )}`
         )
       }
       await Utils.sleep(delay)
